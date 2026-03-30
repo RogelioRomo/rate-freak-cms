@@ -13,7 +13,7 @@ export const Reviews: CollectionConfig<'reviews'> = {
     {
       name: 'item',
       type: 'relationship',
-      relationTo: ['albums', 'tracks'],
+      relationTo: ['albums', 'tracks', 'books', 'comics', 'mangas', 'shows'],
       required: true,
     },
     {

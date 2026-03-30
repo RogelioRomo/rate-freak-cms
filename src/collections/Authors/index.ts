@@ -1,8 +1,8 @@
 import { authenticated } from '@/access/authenticated'
 import { CollectionConfig, slugField } from 'payload'
 
-export const Comics: CollectionConfig<'comics'> = {
-  slug: 'comics',
+export const Authors: CollectionConfig<'authors'> = {
+  slug: 'authors',
   access: {
     create: authenticated,
     delete: authenticated,
@@ -14,14 +14,9 @@ export const Comics: CollectionConfig<'comics'> = {
   },
   fields: [
     {
-      name: 'title',
+      name: 'name',
       type: 'text',
       required: true,
-    },
-    {
-      name: 'author',
-      type: 'relationship',
-      relationTo: 'authors',
     },
     {
       name: 'publishedAt',
@@ -43,17 +38,6 @@ export const Comics: CollectionConfig<'comics'> = {
           },
         ],
       },
-    },
-    {
-      name: 'type',
-      type: 'relationship',
-      relationTo: 'categories',
-    },
-    {
-      name: 'cover',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
     },
     slugField(),
   ],

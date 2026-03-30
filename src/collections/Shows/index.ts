@@ -1,13 +1,16 @@
 import { authenticated } from '@/access/authenticated'
 import { CollectionConfig, slugField } from 'payload'
 
-export const Reviews: CollectionConfig<'shows'> = {
+export const Shows: CollectionConfig<'shows'> = {
   slug: 'shows',
   access: {
     create: authenticated,
     delete: authenticated,
     read: authenticated,
     update: authenticated,
+  },
+  admin: {
+    useAsTitle: 'title',
   },
   fields: [
     {

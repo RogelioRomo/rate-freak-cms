@@ -1,13 +1,16 @@
 import { authenticated } from '@/access/authenticated'
 import { CollectionConfig, slugField } from 'payload'
 
-export const Reviews: CollectionConfig<'tracks'> = {
+export const Tracks: CollectionConfig<'tracks'> = {
   slug: 'tracks',
   access: {
     create: authenticated,
     delete: authenticated,
     read: authenticated,
     update: authenticated,
+  },
+  admin: {
+    useAsTitle: 'title',
   },
   fields: [
     {
@@ -17,7 +20,13 @@ export const Reviews: CollectionConfig<'tracks'> = {
     },
     {
       name: 'artist',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'artists',
+    },
+    {
+      name: 'genre',
+      type: 'relationship',
+      relationTo: 'genres',
     },
     {
       name: 'publishedAt',

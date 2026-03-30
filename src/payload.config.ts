@@ -9,11 +9,21 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
+import { Albums } from './collections/Albums'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { Genres } from './collections/Genres'
+import { Artists } from './collections/Artists'
+import { Books } from './collections/Books'
+import { Mangas } from './collections/Mangas'
+import { Comics } from './collections/Comics'
+import { Shows } from './collections/Shows'
+import { Tracks } from './collections/Tracks'
+import { Authors } from './collections/Authors'
+import { Reviews } from './collections/Reviews'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -62,7 +72,23 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
   }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Albums,
+    Tracks,
+    Genres,
+    Artists,
+    Authors,
+    Books,
+    Mangas,
+    Comics,
+    Shows,
+    Reviews,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
   plugins,

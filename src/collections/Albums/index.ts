@@ -2,13 +2,16 @@ import { authenticated } from '@/access/authenticated'
 import { CollectionConfig, slugField } from 'payload'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 
-export const Reviews: CollectionConfig<'albums'> = {
+export const Albums: CollectionConfig<'albums'> = {
   slug: 'albums',
   access: {
     create: authenticated,
     delete: authenticated,
     read: authenticated,
     update: authenticated,
+  },
+  admin: {
+    useAsTitle: 'title',
   },
   fields: [
     {
@@ -17,21 +20,19 @@ export const Reviews: CollectionConfig<'albums'> = {
       required: true,
     },
     {
-      name: 'releaseDate',
-      type: 'date',
+      name: 'releaseYear',
+      type: 'text',
       required: true,
     },
     {
       name: 'genre',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'genres',
     },
     {
       name: 'artist',
-      type: 'text',
-    },
-    {
-      name: 'tracks',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'artists',
     },
     {
       name: 'publishedAt',

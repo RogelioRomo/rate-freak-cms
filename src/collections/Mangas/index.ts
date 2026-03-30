@@ -1,13 +1,16 @@
 import { authenticated } from '@/access/authenticated'
 import { CollectionConfig, slugField } from 'payload'
 
-export const Reviews: CollectionConfig<'mangas'> = {
+export const Mangas: CollectionConfig<'mangas'> = {
   slug: 'mangas',
   access: {
     create: authenticated,
     delete: authenticated,
     read: authenticated,
     update: authenticated,
+  },
+  admin: {
+    useAsTitle: 'title',
   },
   fields: [
     {
@@ -17,7 +20,8 @@ export const Reviews: CollectionConfig<'mangas'> = {
     },
     {
       name: 'author',
-      type: 'text',
+      type: 'relationship',
+      relationTo: 'authors',
     },
     {
       name: 'publishedAt',
