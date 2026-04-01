@@ -1,6 +1,7 @@
 'use client'
 
 import { cn } from '@/utilities/ui'
+import Link from 'next/link'
 import React from 'react'
 
 import type {
@@ -79,24 +80,27 @@ export const ReviewCard: React.FC<{
   const title = getTitle(item)
   const creator = getCreator(item)
   const releaseYear = item.relationTo === 'albums' ? (item.value as Album).releaseYear : null
+  const href = `/${item.relationTo}/${item.value.slug}`
 
   return (
-    <article className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
-      <div className="relative w-full aspect-square">
-        {cover ? (
-          <Media resource={cover} size="33vw" fill imgClassName="object-cover" />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-muted text-muted-foreground">
-            No image
-          </div>
-        )}
-      </div>
-      <div className="p-4 space-y-1">
-        <h3 className="font-semibold text-base leading-tight truncate">{title}</h3>
-        {creator && <p className="text-sm text-muted-foreground truncate">{creator}</p>}
-        {releaseYear && <p className="text-sm text-muted-foreground">{releaseYear}</p>}
-        <StarRating rating={rating} />
-      </div>
-    </article>
+    <Link href={href} className="block">
+      <article className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
+        <div className="relative w-full aspect-square">
+          {cover ? (
+            <Media resource={cover} size="33vw" fill imgClassName="object-cover" />
+          ) : (
+            <div className="flex h-full items-center justify-center bg-muted text-muted-foreground">
+              No image
+            </div>
+          )}
+        </div>
+        <div className="p-4 space-y-1">
+          <h3 className="font-semibold text-base leading-tight truncate">{title}</h3>
+          {creator && <p className="text-sm text-muted-foreground truncate">{creator}</p>}
+          {releaseYear && <p className="text-sm text-muted-foreground">{releaseYear}</p>}
+          <StarRating rating={rating} />
+        </div>
+      </article>
+    </Link>
   )
 }
