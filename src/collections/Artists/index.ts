@@ -1,4 +1,5 @@
 import { authenticated } from '@/access/authenticated'
+import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { CollectionConfig, slugField } from 'payload'
 
 export const Artists: CollectionConfig<'artists'> = {
@@ -10,7 +11,7 @@ export const Artists: CollectionConfig<'artists'> = {
     update: authenticated,
   },
   admin: {
-    useAsTitle: 'title',
+    useAsTitle: 'name',
   },
   fields: [
     {
@@ -21,24 +22,13 @@ export const Artists: CollectionConfig<'artists'> = {
     {
       name: 'publishedAt',
       type: 'date',
-      required: true,
       admin: {
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
         position: 'sidebar',
-      },
-      hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
-            }
-            return value
-          },
-        ],
       },
     },
     slugField(),
   ],
+  hooks: {
+    beforeChange: [populatePublishedAt],
+  },
 }

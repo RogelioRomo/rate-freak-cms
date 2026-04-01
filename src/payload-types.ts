@@ -811,7 +811,7 @@ export interface Album {
   releaseYear: string;
   genre?: (number | null) | Genre;
   artist?: (number | null) | Artist;
-  publishedAt: string;
+  publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
   /**
@@ -844,7 +844,7 @@ export interface Genre {
 export interface Artist {
   id: number;
   name: string;
-  publishedAt: string;
+  publishedAt?: string | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -862,7 +862,7 @@ export interface Track {
   title: string;
   artist?: (number | null) | Artist;
   genre?: (number | null) | Genre;
-  publishedAt: string;
+  publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
   /**
@@ -880,7 +880,7 @@ export interface Track {
 export interface Author {
   id: number;
   name: string;
-  publishedAt: string;
+  publishedAt?: string | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
@@ -897,7 +897,7 @@ export interface Book {
   id: number;
   title: string;
   author?: (number | null) | Author;
-  publishedAt: string;
+  publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
   /**
@@ -916,7 +916,7 @@ export interface Mangas {
   id: number;
   title: string;
   author?: (number | null) | Author;
-  publishedAt: string;
+  publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
   /**
@@ -935,7 +935,7 @@ export interface Comic {
   id: number;
   title: string;
   author?: (number | null) | Author;
-  publishedAt: string;
+  publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
   /**
@@ -953,7 +953,7 @@ export interface Comic {
 export interface Show {
   id: number;
   title: string;
-  publishedAt: string;
+  publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
   /**
@@ -995,7 +995,7 @@ export interface Review {
         relationTo: 'shows';
         value: number | Show;
       };
-  publishedAt: string;
+  publishedAt?: string | null;
   rating: number;
   reviewText?: string | null;
   type?: (number | null) | Category;

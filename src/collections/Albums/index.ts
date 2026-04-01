@@ -1,6 +1,7 @@
 import { authenticated } from '@/access/authenticated'
 import { CollectionConfig, slugField } from 'payload'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
+import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 
 export const Albums: CollectionConfig<'albums'> = {
   slug: 'albums',
@@ -37,22 +38,8 @@ export const Albums: CollectionConfig<'albums'> = {
     {
       name: 'publishedAt',
       type: 'date',
-      required: true,
       admin: {
-        date: {
-          pickerAppearance: 'dayAndTime',
-        },
         position: 'sidebar',
-      },
-      hooks: {
-        beforeChange: [
-          ({ siblingData, value }) => {
-            if (siblingData._status === 'published' && !value) {
-              return new Date()
-            }
-            return value
-          },
-        ],
       },
     },
     {
@@ -71,4 +58,7 @@ export const Albums: CollectionConfig<'albums'> = {
     },
     slugField(),
   ],
+  hooks: {
+    beforeChange: [populatePublishedAt],
+  },
 }
