@@ -1,11 +1,12 @@
 import type { Metadata } from 'next/types'
 
+import { ItemCard } from '@/components/ItemCard'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
-import { ReviewCard } from '@/components/ReviewCard'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
+import type { Media as MediaType } from '@/payload-types'
 import PageClient from './page.client'
 
 export const dynamic = 'force-static'
@@ -14,14 +15,11 @@ export const revalidate = 600
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })
 
-  const reviews = await payload.find({
-    collection: 'reviews',
-    depth: 2,
+  const shows = await payload.find({
+    collection: 'shows',
+    depth: 1,
     limit: 12,
     overrideAccess: true,
-    where: {
-      'item.relationTo': { equals: 'shows' },
-    },
     sort: '-createdAt',
   })
 
@@ -36,32 +34,33 @@ export default async function Page() {
 
       <div className="container mb-8">
         <PageRange
-          collection="reviews"
-          collectionLabels={{ plural: 'Shows Reviews', singular: 'Shows Review' }}
-          currentPage={reviews.page}
+          collectionLabels={{ plural: 'Shows', singular: 'Show' }}
+          currentPage={shows.page}
           limit={12}
-          totalDocs={reviews.totalDocs}
+          totalDocs={shows.totalDocs}
         />
       </div>
 
       <div className="container">
-        {reviews.docs.length > 0 ? (
+        {shows.docs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {reviews.docs.map((review) => (
-              <ReviewCard
-                key={review.id}
-                review={review as React.ComponentProps<typeof ReviewCard>['review']}
+            {shows.docs.map((show) => (
+              <ItemCard
+                key={show.id}
+                title={show.title}
+                href={`/shows/${show.slug}`}
+                cover={typeof show.cover === 'object' ? (show.cover as MediaType) : null}
               />
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No shows reviews yet.</p>
+          <p className="text-muted-foreground">No shows yet.</p>
         )}
       </div>
 
       <div className="container">
-        {reviews.totalPages > 1 && reviews.page && (
-          <Pagination basePath="/shows" page={reviews.page} totalPages={reviews.totalPages} />
+        {shows.totalPages > 1 && shows.page && (
+          <Pagination basePath="/shows" page={shows.page} totalPages={shows.totalPages} />
         )}
       </div>
     </div>
@@ -70,6 +69,6 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Showss | Rate Freak',
+    title: 'Shows | Rate Freak',
   }
 }

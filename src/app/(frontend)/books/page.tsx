@@ -1,11 +1,12 @@
 import type { Metadata } from 'next/types'
 
+import { ItemCard } from '@/components/ItemCard'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
-import { ReviewCard } from '@/components/ReviewCard'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
+import type { Media as MediaType } from '@/payload-types'
 import PageClient from './page.client'
 
 export const dynamic = 'force-static'
@@ -14,14 +15,11 @@ export const revalidate = 600
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })
 
-  const reviews = await payload.find({
-    collection: 'reviews',
-    depth: 2,
+  const books = await payload.find({
+    collection: 'books',
+    depth: 1,
     limit: 12,
     overrideAccess: true,
-    where: {
-      'item.relationTo': { equals: 'books' },
-    },
     sort: '-createdAt',
   })
 
@@ -36,32 +34,33 @@ export default async function Page() {
 
       <div className="container mb-8">
         <PageRange
-          collection="reviews"
-          collectionLabels={{ plural: 'Books Reviews', singular: 'Books Review' }}
-          currentPage={reviews.page}
+          collectionLabels={{ plural: 'Books', singular: 'Book' }}
+          currentPage={books.page}
           limit={12}
-          totalDocs={reviews.totalDocs}
+          totalDocs={books.totalDocs}
         />
       </div>
 
       <div className="container">
-        {reviews.docs.length > 0 ? (
+        {books.docs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {reviews.docs.map((review) => (
-              <ReviewCard
-                key={review.id}
-                review={review as React.ComponentProps<typeof ReviewCard>['review']}
+            {books.docs.map((book) => (
+              <ItemCard
+                key={book.id}
+                title={book.title}
+                href={`/books/${book.slug}`}
+                cover={typeof book.cover === 'object' ? (book.cover as MediaType) : null}
               />
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No books reviews yet.</p>
+          <p className="text-muted-foreground">No books yet.</p>
         )}
       </div>
 
       <div className="container">
-        {reviews.totalPages > 1 && reviews.page && (
-          <Pagination basePath="/books" page={reviews.page} totalPages={reviews.totalPages} />
+        {books.totalPages > 1 && books.page && (
+          <Pagination basePath="/books" page={books.page} totalPages={books.totalPages} />
         )}
       </div>
     </div>
