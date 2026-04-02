@@ -1,10 +1,10 @@
-import Link from 'next/link'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
 
 import PageClient from './page.client'
+import ProfileNav from './ProfileNav'
 
 type Args = {
   children: React.ReactNode
@@ -38,14 +38,7 @@ export default async function ProfileLayout({ children, params: paramsPromise }:
       </div>
 
       <div className="container mb-8">
-        <nav className="flex gap-4 border-b border-border pb-2">
-          <Link href={basePath} className="text-sm font-medium hover:underline">
-            Overview
-          </Link>
-          <Link href={`${basePath}/reviews`} className="text-sm font-medium hover:underline">
-            Reviews
-          </Link>
-        </nav>
+        <ProfileNav basePath={basePath} />
       </div>
 
       {children}

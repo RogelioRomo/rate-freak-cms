@@ -61,23 +61,31 @@ export default async function AlbumPage({ params: paramsPromise }: Args) {
           <div className="flex-1 space-y-4">
             <h1 className="text-3xl font-bold">{item.title}</h1>
             {artist && <p className="text-lg text-muted-foreground">{artist.name}</p>}
-            {item.releaseYear && <p className="text-muted-foreground">{item.releaseYear}</p>}
 
             {reviews.length > 0 && (
               <div className="space-y-6 pt-4">
                 <h2 className="text-xl font-semibold">Reviews</h2>
                 {reviews.map((review) => (
                   <div key={review.id} className="border border-border rounded-lg p-4 space-y-2">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <span
-                          key={i}
-                          className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}
-                        >
-                          ★
-                        </span>
-                      ))}
-                      <span className="ml-1 text-sm">{review.rating}/5</span>
+                    <div className="flex items-center justify-between">
+                      {review.user && (
+                        <div className="text-xs text-muted-foreground">
+                          {typeof review.user === 'object' && 'name' in review.user
+                            ? review.user.name
+                            : ''}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span
+                            key={i}
+                            className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}
+                          >
+                            ★
+                          </span>
+                        ))}
+                        <span className="ml-1 text-sm">{review.rating}/5</span>
+                      </div>
                     </div>
                     {review.reviewText && (
                       <p className="text-muted-foreground">{review.reviewText}</p>
@@ -119,9 +127,10 @@ const queryBySlug = cache(async ({ slug }: { slug: string }) => {
 
   const reviewsResult = await payload.find({
     collection: 'reviews',
-    depth: 1,
+    depth: 2,
     overrideAccess: true,
     pagination: false,
+    limit: 4,
     where: {
       and: [{ 'item.relationTo': { equals: 'albums' } }, { 'item.value': { equals: item.id } }],
     },

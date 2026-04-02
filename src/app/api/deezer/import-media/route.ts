@@ -27,6 +27,8 @@ export async function POST(request: NextRequest) {
     'media-imdb.com',
     'comicvine.gamespot.com',
     'anilist.co',
+    'hardcover.app',
+    'imgix.net',
   ]
   let parsedUrl: URL
   try {

@@ -9,6 +9,13 @@ declare global {
       CLOUDINARY_API_KEY: string
       CLOUDINARY_API_SECRET: string
       CLOUDINARY_FOLDER?: string
+      DEEZER_API_ENDPOINT: string
+      OMDB_API_KEY_URL: string
+      COMIC_VINE_API_KEY_URL: string
+      COMIC_VINE_API_KEY: string
+      ANI_LIST_API_URL: string
+      HARDCOVER_BEARER_TOKEN: string
+      HARDCOVER_API_URL: string
     }
   }
 }

@@ -16,6 +16,34 @@ export const Books: CollectionConfig<'books'> = {
   },
   fields: [
     {
+      name: 'apiSearch',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/ApiSearch',
+        },
+        custom: {
+          apiEndpoint: '/api/hardcover/search',
+          resultsKey: 'results',
+          fieldMapping: {
+            title: 'title',
+          },
+          uploadFields: {
+            coverImage: { payloadField: 'cover', altField: 'title' },
+          },
+          relationshipFields: {
+            authorName: {
+              payloadField: 'author',
+              collection: 'authors',
+              matchField: 'name',
+            },
+          },
+          displayFields: ['title', 'authorName'],
+          thumbnailField: 'coverImage',
+        },
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,

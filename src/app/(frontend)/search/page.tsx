@@ -20,7 +20,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   const posts = await payload.find({
     collection: 'search',
     depth: 1,
-    limit: 12,
+    limit: 6,
     select: {
       title: true,
       slug: true,

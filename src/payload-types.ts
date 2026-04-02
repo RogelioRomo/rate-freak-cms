@@ -999,11 +999,7 @@ export interface Review {
   reviewText?: string | null;
   type?: (number | null) | Category;
   user: number | User;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1780,7 +1776,6 @@ export interface ReviewsSelect<T extends boolean = true> {
   reviewText?: T;
   type?: T;
   user?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;

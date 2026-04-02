@@ -1,6 +1,7 @@
 import { authenticated } from '@/access/authenticated'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
-import { CollectionConfig, slugField } from 'payload'
+import { generateReviewSlug } from '@/utilities/generateReviewSlug'
+import type { CollectionConfig } from 'payload'
 
 export const Reviews: CollectionConfig<'reviews'> = {
   slug: 'reviews',
@@ -46,9 +47,18 @@ export const Reviews: CollectionConfig<'reviews'> = {
       relationTo: 'users',
       required: true,
     },
-    slugField(),
+    {
+      name: 'slug',
+      type: 'text',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
   ],
   hooks: {
+    beforeValidate: [generateReviewSlug],
     beforeChange: [populatePublishedAt],
   },
 }
