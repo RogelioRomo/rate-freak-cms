@@ -1,4 +1,5 @@
 import { authenticated } from '@/access/authenticated'
+import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { CollectionConfig, slugField } from 'payload'
 
@@ -41,6 +42,9 @@ export const Books: CollectionConfig<'books'> = {
       type: 'upload',
       relationTo: 'media',
       required: true,
+      hooks: {
+        afterChange: [ensureMediaFolder()],
+      },
     },
     slugField(),
   ],

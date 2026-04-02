@@ -26,6 +26,7 @@ import {
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from 'payload'
+import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 
 export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
@@ -80,6 +81,9 @@ export const Posts: CollectionConfig<'posts'> = {
               name: 'heroImage',
               type: 'upload',
               relationTo: 'media',
+              hooks: {
+                afterChange: [ensureMediaFolder()],
+              },
             },
             {
               name: 'content',

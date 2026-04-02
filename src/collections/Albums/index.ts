@@ -16,6 +16,26 @@ export const Albums: CollectionConfig<'albums'> = {
   },
   fields: [
     {
+      name: 'apiSearch',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/ApiSearch',
+        },
+        custom: {
+          apiEndpoint: '/api/deezer/search?type=album',
+          resultsKey: 'data',
+          fieldMapping: {
+            title: 'title',
+          },
+          uploadFields: {
+            cover_big: { payloadField: 'cover', altField: 'title' },
+          },
+          displayFields: ['title', 'artist.name'],
+        },
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,

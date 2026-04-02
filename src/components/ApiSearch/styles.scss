@@ -1,0 +1,96 @@
+.api-search {
+  margin-bottom: var(--base);
+  padding: var(--base);
+  background: var(--theme-elevation-50);
+  border: 1px solid var(--theme-elevation-150);
+  border-radius: var(--border-radius-m);
+
+  &__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: calc(var(--base) / 2);
+    color: var(--theme-text);
+  }
+
+  &__input-row {
+    display: flex;
+    gap: calc(var(--base) / 2);
+  }
+
+  &__input {
+    flex: 1;
+    padding: calc(var(--base) / 2) var(--base);
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--border-radius-s);
+    background: var(--theme-input-bg);
+    color: var(--theme-text);
+    font-size: 1rem;
+
+    &:focus {
+      outline: none;
+      border-color: var(--theme-elevation-400);
+    }
+  }
+
+  &__button {
+    padding: calc(var(--base) / 2) var(--base);
+    background: var(--theme-elevation-500);
+    color: var(--theme-bg);
+    border: none;
+    border-radius: var(--border-radius-s);
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+
+    &:hover {
+      background: var(--theme-elevation-600);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__results {
+    list-style: none;
+    margin: calc(var(--base) / 2) 0 0;
+    padding: 0;
+    border: 1px solid var(--theme-elevation-150);
+    border-radius: var(--border-radius-s);
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  &__result-item {
+    button {
+      display: flex;
+      align-items: center;
+      gap: calc(var(--base) / 2);
+      width: 100%;
+      padding: calc(var(--base) / 2) var(--base);
+      background: none;
+      border: none;
+      border-bottom: 1px solid var(--theme-elevation-100);
+      color: var(--theme-text);
+      text-align: left;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--theme-elevation-100);
+      }
+    }
+
+    &:last-child button {
+      border-bottom: none;
+    }
+  }
+
+  &__result-thumb {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--border-radius-s);
+    flex-shrink: 0;
+  }
+}

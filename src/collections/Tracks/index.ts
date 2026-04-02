@@ -1,4 +1,5 @@
 import { authenticated } from '@/access/authenticated'
+import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { CollectionConfig, slugField } from 'payload'
 
@@ -14,6 +15,27 @@ export const Tracks: CollectionConfig<'tracks'> = {
     useAsTitle: 'title',
   },
   fields: [
+    {
+      name: 'apiSearch',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/ApiSearch',
+        },
+        custom: {
+          apiEndpoint: '/api/deezer/search?type=track',
+          resultsKey: 'data',
+          fieldMapping: {
+            title: 'title',
+          },
+          uploadFields: {
+            'album.cover_big': { payloadField: 'cover', altField: 'title' },
+          },
+          displayFields: ['title', 'artist.name'],
+          thumbnailField: 'album.cover_small',
+        },
+      },
+    },
     {
       name: 'title',
       type: 'text',
@@ -46,6 +68,9 @@ export const Tracks: CollectionConfig<'tracks'> = {
       type: 'upload',
       relationTo: 'media',
       required: true,
+      hooks: {
+        afterChange: [ensureMediaFolder()],
+      },
     },
     slugField(),
   ],

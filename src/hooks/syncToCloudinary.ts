@@ -88,7 +88,11 @@ function stripExtension(filename: string): string {
  * Uploads a media document (and all its sizes) to Cloudinary under the correct folder.
  * Can be called from other collection hooks when media needs re-syncing.
  */
-export async function syncMediaDocToCloudinary(payload: Payload, mediaDoc: Media): Promise<void> {
+export async function syncMediaDocToCloudinary(
+  payload: Payload,
+  mediaDoc: Media,
+  options?: { skipSizes?: boolean },
+): Promise<void> {
   const folderId =
     typeof mediaDoc.folder === 'number' ? mediaDoc.folder : (mediaDoc.folder?.id ?? null)
   const folderPath = await getFolderPath(payload, folderId)
@@ -101,7 +105,7 @@ export async function syncMediaDocToCloudinary(payload: Payload, mediaDoc: Media
     await uploadFile(filePath, cloudinaryFolder, publicId, resourceType)
   }
 
-  if (mediaDoc.sizes && resourceType === 'image') {
+  if (mediaDoc.sizes && resourceType === 'image' && !options?.skipSizes) {
     const sizeEntries = Object.entries(mediaDoc.sizes) as [string, { filename?: string | null }][]
 
     await Promise.all(
@@ -127,8 +131,11 @@ export const syncToCloudinary: CollectionAfterChangeHook = async ({
 }) => {
   if (context.skipCloudinarySync) return doc
 
-  // Only sync on create or when a new file was uploaded during update
-  if (operation !== 'create' && !req.file) return doc
+  // Skip on create — ensureMediaFolder will handle the upload after folder assignment
+  if (operation === 'create') return doc
+
+  // Only sync when a new file was uploaded during update
+  if (!req.file) return doc
 
   const { payload } = req
 
@@ -145,8 +152,8 @@ export const syncToCloudinary: CollectionAfterChangeHook = async ({
       await uploadFile(filePath, cloudinaryFolder, publicId, resourceType)
     }
 
-    // Upload all generated image sizes
-    if (doc.sizes && resourceType === 'image') {
+    // Upload all generated image sizes (skip if flagged, e.g. Deezer imports)
+    if (doc.sizes && resourceType === 'image' && !context.skipCloudinarySizes) {
       const sizeEntries = Object.entries(doc.sizes) as [string, { filename?: string | null }][]
 
       await Promise.all(

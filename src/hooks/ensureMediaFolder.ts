@@ -89,8 +89,8 @@ export function ensureMediaFolder(folderName?: string): FieldHook {
         req,
       })) as Media
 
-      // Re-sync to Cloudinary under the new folder path
-      await syncMediaDocToCloudinary(payload, updatedMedia)
+      // Re-sync to Cloudinary under the new folder path (original only, no sizes)
+      await syncMediaDocToCloudinary(payload, updatedMedia, { skipSizes: true })
     } catch (error) {
       console.error(
         `[ensureMediaFolder] Failed to assign folder "${targetFolder}" for media ${mediaId}:`,
