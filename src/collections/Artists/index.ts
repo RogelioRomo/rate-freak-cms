@@ -26,7 +26,7 @@ export const Artists: CollectionConfig<'artists'> = {
         position: 'sidebar',
       },
     },
-    slugField(),
+    slugField({ fieldToUse: 'name' }),
   ],
   hooks: {
     beforeChange: [populatePublishedAt],

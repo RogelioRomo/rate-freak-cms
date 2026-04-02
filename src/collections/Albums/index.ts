@@ -31,17 +31,15 @@ export const Albums: CollectionConfig<'albums'> = {
           uploadFields: {
             cover_big: { payloadField: 'cover', altField: 'title' },
           },
+          relationshipFields: {
+            'artist.name': { payloadField: 'artist', collection: 'artists', matchField: 'name' },
+          },
           displayFields: ['title', 'artist.name'],
         },
       },
     },
     {
       name: 'title',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'releaseYear',
       type: 'text',
       required: true,
     },

@@ -16,6 +16,34 @@ export const Comics: CollectionConfig<'comics'> = {
   },
   fields: [
     {
+      name: 'apiSearch',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/ApiSearch',
+        },
+        custom: {
+          apiEndpoint: '/api/comicvine/search?resources=volume',
+          resultsKey: 'results',
+          fieldMapping: {
+            name: 'title',
+          },
+          uploadFields: {
+            'image.medium_url': { payloadField: 'cover', altField: 'name' },
+          },
+          relationshipFields: {
+            'publisher.name': {
+              payloadField: 'author',
+              collection: 'authors',
+              matchField: 'name',
+            },
+          },
+          displayFields: ['name', 'start_year'],
+          thumbnailField: 'image.small_url',
+        },
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,

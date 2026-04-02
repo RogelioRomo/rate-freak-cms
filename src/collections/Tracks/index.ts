@@ -31,6 +31,9 @@ export const Tracks: CollectionConfig<'tracks'> = {
           uploadFields: {
             'album.cover_big': { payloadField: 'cover', altField: 'title' },
           },
+          relationshipFields: {
+            'artist.name': { payloadField: 'artist', collection: 'artists', matchField: 'name' },
+          },
           displayFields: ['title', 'artist.name'],
           thumbnailField: 'album.cover_small',
         },

@@ -16,6 +16,34 @@ export const Mangas: CollectionConfig<'mangas'> = {
   },
   fields: [
     {
+      name: 'apiSearch',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/ApiSearch',
+        },
+        custom: {
+          apiEndpoint: '/api/anilist/search',
+          resultsKey: 'results',
+          fieldMapping: {
+            title: 'title',
+          },
+          uploadFields: {
+            coverImage: { payloadField: 'cover', altField: 'title' },
+          },
+          relationshipFields: {
+            author: {
+              payloadField: 'author',
+              collection: 'authors',
+              matchField: 'name',
+            },
+          },
+          displayFields: ['title', 'author'],
+          thumbnailField: 'coverImage',
+        },
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,

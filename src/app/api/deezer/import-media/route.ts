@@ -19,8 +19,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Missing "url" in request body' }, { status: 400 })
   }
 
-  // Validate URL is from Deezer CDN
-  const allowedHosts = ['dzcdn.net', 'api.deezer.com']
+  // Validate URL is from an allowed CDN
+  const allowedHosts = [
+    'dzcdn.net',
+    'api.deezer.com',
+    'media-amazon.com',
+    'media-imdb.com',
+    'comicvine.gamespot.com',
+    'anilist.co',
+  ]
   let parsedUrl: URL
   try {
     parsedUrl = new URL(url)

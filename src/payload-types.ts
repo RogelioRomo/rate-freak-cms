@@ -808,7 +808,6 @@ export interface Form {
 export interface Album {
   id: number;
   title: string;
-  releaseYear: string;
   genre?: (number | null) | Genre;
   artist?: (number | null) | Artist;
   publishedAt?: string | null;
@@ -1650,7 +1649,6 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface AlbumsSelect<T extends boolean = true> {
   title?: T;
-  releaseYear?: T;
   genre?: T;
   artist?: T;
   publishedAt?: T;

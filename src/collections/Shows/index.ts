@@ -16,6 +16,27 @@ export const Shows: CollectionConfig<'shows'> = {
   },
   fields: [
     {
+      name: 'apiSearch',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/components/ApiSearch',
+        },
+        custom: {
+          apiEndpoint: '/api/omdb/search?type=series',
+          resultsKey: 'Search',
+          fieldMapping: {
+            Title: 'title',
+          },
+          uploadFields: {
+            Poster: { payloadField: 'cover', altField: 'Title' },
+          },
+          displayFields: ['Title', 'Year'],
+          thumbnailField: 'Poster',
+        },
+      },
+    },
+    {
       name: 'title',
       type: 'text',
       required: true,

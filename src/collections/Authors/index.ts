@@ -26,7 +26,7 @@ export const Authors: CollectionConfig<'authors'> = {
         position: 'sidebar',
       },
     },
-    slugField(),
+    slugField({ fieldToUse: 'name' }),
   ],
   hooks: {
     beforeChange: [populatePublishedAt],

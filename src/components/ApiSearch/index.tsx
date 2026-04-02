@@ -16,8 +16,15 @@ type FieldMapping = Record<string, string>
 // e.g. { "cover_big": { payloadField: "cover", altField: "title" } }
 type UploadFieldMapping = Record<string, { payloadField: string; altField?: string }>
 
+// Map API values to Payload relationship fields
+// e.g. { "artist.name": { payloadField: "artist", collection: "artists", matchField: "name" } }
+type RelationshipFieldMapping = Record<
+  string,
+  { payloadField: string; collection: string; matchField: string }
+>
+
 // Default config — override via field.admin.custom in each collection
-const DEFAULT_API_ENDPOINT = 'https://api.deezer.com/search/album'
+const DEFAULT_API_ENDPOINT = process.env.DEEZER_API_ENDPOINT
 const DEFAULT_RESULTS_KEY = 'data'
 const DEFAULT_FIELD_MAPPING: FieldMapping = {
   title: 'title',
@@ -70,6 +77,8 @@ const ApiSearchComponent: UIFieldClientComponent = ({ field }) => {
   }, [query, apiEndpoint, resultsKey])
 
   const uploadFields: UploadFieldMapping = (custom?.uploadFields as UploadFieldMapping) ?? {}
+  const relationshipFields: RelationshipFieldMapping =
+    (custom?.relationshipFields as RelationshipFieldMapping) ?? {}
 
   const handleSelect = useCallback(
     async (result: SearchResult) => {
@@ -82,6 +91,33 @@ const ApiSearchComponent: UIFieldClientComponent = ({ field }) => {
         const value = getNestedValue(result, apiPath)
         if (value !== undefined) {
           formState[fieldPath] = { value }
+        }
+      }
+
+      // Resolve relationship fields (find or create)
+      const relationshipEntries = Object.entries(relationshipFields)
+      if (relationshipEntries.length > 0) {
+        const relationshipResults = await Promise.allSettled(
+          relationshipEntries.map(async ([apiPath, { payloadField, collection, matchField }]) => {
+            const value = getNestedValue(result, apiPath)
+            if (value == null) return null
+
+            const res = await fetch('/api/resolve-relationship', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ collection, field: matchField, value: String(value) }),
+            })
+
+            if (!res.ok) throw new Error(`Failed to resolve ${collection}`)
+            const { id } = await res.json()
+            return { payloadField, id }
+          }),
+        )
+
+        for (const result of relationshipResults) {
+          if (result.status === 'fulfilled' && result.value) {
+            formState[result.value.payloadField] = { value: result.value.id }
+          }
         }
       }
 
@@ -119,7 +155,7 @@ const ApiSearchComponent: UIFieldClientComponent = ({ field }) => {
       setQuery('')
       setLoading(false)
     },
-    [dispatchFields, fieldMapping, uploadFields],
+    [dispatchFields, fieldMapping, uploadFields, relationshipFields],
   )
 
   const getDisplayText = (result: SearchResult): string => {
