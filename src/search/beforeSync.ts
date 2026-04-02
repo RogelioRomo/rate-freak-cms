@@ -5,23 +5,28 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
     doc: { relationTo: collection },
   } = searchDoc
 
-  const { slug, id, categories, title, meta } = originalDoc
+  const { slug, id, title, meta, cover } = originalDoc
+
+  // Posts use 'categories', other collections use 'type' to reference categories
+  const categorySource = originalDoc.categories ?? (originalDoc.type ? [originalDoc.type] : [])
+
+  // Resolve image: posts use meta.image, other collections use cover
+  const image = meta?.image?.id || meta?.image || cover?.id || cover || undefined
 
   const modifiedDoc: DocToSync = {
     ...searchDoc,
     slug,
     meta: {
-      ...meta,
       title: meta?.title || title,
-      image: meta?.image?.id || meta?.image,
-      description: meta?.description,
+      image,
+      description: meta?.description || undefined,
     },
     categories: [],
   }
 
-  if (categories && Array.isArray(categories) && categories.length > 0) {
+  if (Array.isArray(categorySource) && categorySource.length > 0) {
     const populatedCategories: { id: string | number; title: string }[] = []
-    for (const category of categories) {
+    for (const category of categorySource) {
       if (!category) {
         continue
       }

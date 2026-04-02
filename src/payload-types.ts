@@ -1061,10 +1061,31 @@ export interface Search {
   id: number;
   title?: string | null;
   priority?: number | null;
-  doc: {
-    relationTo: 'posts';
-    value: number | Post;
-  };
+  doc:
+    | {
+        relationTo: 'albums';
+        value: number | Album;
+      }
+    | {
+        relationTo: 'books';
+        value: number | Book;
+      }
+    | {
+        relationTo: 'comics';
+        value: number | Comic;
+      }
+    | {
+        relationTo: 'mangas';
+        value: number | Mangas;
+      }
+    | {
+        relationTo: 'shows';
+        value: number | Show;
+      }
+    | {
+        relationTo: 'tracks';
+        value: number | Track;
+      };
   slug?: string | null;
   meta?: {
     title?: string | null;

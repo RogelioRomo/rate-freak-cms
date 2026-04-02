@@ -2,13 +2,13 @@
 
 import React from 'react'
 
-import type { Header as HeaderType } from '@/payload-types'
+import type { Header as HeaderType, User } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
-import { SearchIcon } from 'lucide-react'
+import { SearchIcon, UserIcon } from 'lucide-react'
 
-export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
+export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ data, user }) => {
   const navItems = data?.navItems || []
 
   return (
@@ -20,6 +20,17 @@ export const HeaderNav: React.FC<{ data: HeaderType }> = ({ data }) => {
         <span className="sr-only">Search</span>
         <SearchIcon className="w-5 text-primary" />
       </Link>
+      {user?.name ? (
+        <Link href={`/profile/${encodeURIComponent(user.name)}`}>
+          <span className="sr-only">Profile</span>
+          <UserIcon className="w-5 text-primary" />
+        </Link>
+      ) : (
+        <Link href="/admin/login?redirect=%2F">
+          <span className="sr-only">Login</span>
+          <UserIcon className="w-5 text-primary" />
+        </Link>
+      )}
     </nav>
   )
 }
