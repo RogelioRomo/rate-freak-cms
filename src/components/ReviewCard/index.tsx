@@ -79,7 +79,6 @@ export const ReviewCard: React.FC<{
   const cover = getCover(item)
   const title = getTitle(item)
   const creator = getCreator(item)
-  const releaseYear = item.relationTo === 'albums' ? (item.value as Album).releaseYear : null
   const href = `/${item.relationTo}/${item.value.slug}`
 
   return (
@@ -97,7 +96,6 @@ export const ReviewCard: React.FC<{
         <div className="p-4 space-y-1">
           <h3 className="font-semibold text-base leading-tight truncate">{title}</h3>
           {creator && <p className="text-sm text-muted-foreground truncate">{creator}</p>}
-          {releaseYear && <p className="text-sm text-muted-foreground">{releaseYear}</p>}
           <StarRating rating={rating} />
         </div>
       </article>

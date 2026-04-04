@@ -1,3 +1,4 @@
+import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateReviewSlug } from '@/utilities/generateReviewSlug'
@@ -8,7 +9,7 @@ export const Reviews: CollectionConfig<'reviews'> = {
   access: {
     create: authenticated,
     delete: authenticated,
-    read: authenticated,
+    read: anyone,
     update: authenticated,
   },
   fields: [
