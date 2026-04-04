@@ -1,5 +1,4 @@
 import type { FieldHook, Payload } from 'payload'
-import { syncMediaDocToCloudinary } from './syncToCloudinary'
 import type { Media } from '@/payload-types'
 
 /**
@@ -89,8 +88,7 @@ export function ensureMediaFolder(folderName?: string): FieldHook {
         req,
       })) as Media
 
-      // Re-sync to Cloudinary under the new folder path (original only, no sizes)
-      await syncMediaDocToCloudinary(payload, updatedMedia, { skipSizes: true })
+      void updatedMedia
     } catch (error) {
       console.error(
         `[ensureMediaFolder] Failed to assign folder "${targetFolder}" for media ${mediaId}:`,

@@ -50,7 +50,8 @@ export const AdminBar: React.FC<{
     <div
       className={cn(baseClass, 'py-2 bg-black text-white', {
         block: show,
-        hidden: !show,
+        hidden: true,
+        // hidden: !show,
       })}
     >
       <div className="container">
@@ -68,8 +69,10 @@ export const AdminBar: React.FC<{
             plural: collectionLabels[collection]?.plural || 'Pages',
             singular: collectionLabels[collection]?.singular || 'Page',
           }}
+          createProps={{ style: { display: 'none' } }}
           logo={<Title />}
           onAuthChange={onAuthChange}
+          userProps={{ style: { display: 'none' } }}
           onPreviewExit={() => {
             fetch('/next/exit-preview').then(() => {
               router.push('/')
