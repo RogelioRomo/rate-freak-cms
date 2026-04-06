@@ -7,13 +7,21 @@ import type { Header as HeaderType, User } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { SearchIcon, UserIcon, LogOutIcon, LayoutDashboardIcon, UserCircleIcon } from 'lucide-react'
+import {
+  SearchIcon,
+  UserIcon,
+  LogOutIcon,
+  LayoutDashboardIcon,
+  UserCircleIcon,
+  MenuIcon,
+} from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 
 export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ data, user }) => {
   const navItems = data?.navItems || []
@@ -21,9 +29,34 @@ export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ d
 
   return (
     <nav className="flex gap-3 items-center">
-      {navItems.map(({ link }, i) => {
-        return <CMSLink key={i} {...link} appearance="link" />
-      })}
+      {/* Desktop nav links */}
+      <div className="hidden md:flex gap-3 items-center">
+        {navItems.map(({ link }, i) => {
+          return <CMSLink key={i} {...link} appearance="link" />
+        })}
+      </div>
+
+      {/* Mobile hamburger menu - pages links only */}
+      <div className="flex md:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <button aria-label="Open menu">
+              <MenuIcon className="w-5 text-primary" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="right">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-4 mt-4">
+              {navItems.map(({ link }, i) => {
+                return <CMSLink key={i} {...link} appearance="link" />
+              })}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
       <Link href="/search">
         <span className="sr-only">Search</span>
         <SearchIcon className="w-5 text-primary" />
