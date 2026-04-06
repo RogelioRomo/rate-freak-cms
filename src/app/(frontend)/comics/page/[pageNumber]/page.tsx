@@ -1,11 +1,12 @@
 import type { Metadata } from 'next/types'
 
+import { ItemCard } from '@/components/ItemCard'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
-import { ReviewCard } from '@/components/ReviewCard'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
+import type { Media as MediaType } from '@/payload-types'
 import PageClient from './page.client'
 import { notFound } from 'next/navigation'
 
@@ -25,15 +26,12 @@ export default async function Page({ params: paramsPromise }: Args) {
 
   if (!Number.isInteger(sanitizedPageNumber)) notFound()
 
-  const reviews = await payload.find({
-    collection: 'reviews',
-    depth: 2,
+  const comics = await payload.find({
+    collection: 'comics',
+    depth: 1,
     limit: 12,
     page: sanitizedPageNumber,
-    overrideAccess: false,
-    where: {
-      'item.relationTo': { equals: 'comics' },
-    },
+    overrideAccess: true,
     sort: '-createdAt',
   })
 
@@ -48,32 +46,33 @@ export default async function Page({ params: paramsPromise }: Args) {
 
       <div className="container mb-8">
         <PageRange
-          collection="reviews"
-          collectionLabels={{ plural: 'Comics Reviews', singular: 'Comics Review' }}
-          currentPage={reviews.page}
+          collectionLabels={{ plural: 'Comics', singular: 'Comic' }}
+          currentPage={comics.page}
           limit={12}
-          totalDocs={reviews.totalDocs}
+          totalDocs={comics.totalDocs}
         />
       </div>
 
       <div className="container">
-        {reviews.docs.length > 0 ? (
+        {comics.docs.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {reviews.docs.map((review) => (
-              <ReviewCard
-                key={review.id}
-                review={review as React.ComponentProps<typeof ReviewCard>['review']}
+            {comics.docs.map((comic) => (
+              <ItemCard
+                key={comic.id}
+                title={comic.title}
+                href={`/comics/${comic.slug}`}
+                cover={typeof comic.cover === 'object' ? (comic.cover as MediaType) : null}
               />
             ))}
           </div>
         ) : (
-          <p className="text-muted-foreground">No comics reviews yet.</p>
+          <p className="text-muted-foreground">No comics yet.</p>
         )}
       </div>
 
       <div className="container">
-        {reviews?.page && reviews?.totalPages > 1 && (
-          <Pagination basePath="/comics" page={reviews.page} totalPages={reviews.totalPages} />
+        {comics.page && comics.totalPages > 1 && (
+          <Pagination basePath="/comics" page={comics.page} totalPages={comics.totalPages} />
         )}
       </div>
     </div>
@@ -90,11 +89,8 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
   const { totalDocs } = await payload.count({
-    collection: 'reviews',
-    overrideAccess: false,
-    where: {
-      'item.relationTo': { equals: 'comics' },
-    },
+    collection: 'comics',
+    overrideAccess: true,
   })
 
   const totalPages = Math.ceil(totalDocs / 12)
