@@ -24,6 +24,8 @@ const collections = [
   { slug: 'shows' as const, label: 'Shows' },
 ]
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function HomePage() {
   const payload = await getPayload({ config })
 
