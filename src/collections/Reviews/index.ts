@@ -1,5 +1,6 @@
 import { anyone } from '@/access/anyone'
 import { authenticated } from '@/access/authenticated'
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateReviewSlug } from '@/utilities/generateReviewSlug'
 import type { CollectionConfig } from 'payload'
@@ -8,9 +9,9 @@ export const Reviews: CollectionConfig<'reviews'> = {
   slug: 'reviews',
   access: {
     create: authenticated,
-    delete: authenticated,
+    delete: isAdminOrEditor,
     read: anyone,
-    update: authenticated,
+    update: isAdminOrEditor,
   },
   fields: [
     {

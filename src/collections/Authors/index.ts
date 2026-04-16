@@ -1,17 +1,18 @@
-import { authenticated } from '@/access/authenticated'
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { CollectionConfig, slugField } from 'payload'
 
 export const Authors: CollectionConfig<'authors'> = {
   slug: 'authors',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticated,
-    update: authenticated,
+    create: isAdminOrEditor,
+    delete: isAdminOrEditor,
+    read: isAdminOrEditor,
+    update: isAdminOrEditor,
   },
   admin: {
     useAsTitle: 'name',
+    hidden: ({ user }) => user?.role !== 'admin',
   },
   fields: [
     {

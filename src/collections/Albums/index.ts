@@ -1,4 +1,4 @@
-import { authenticated } from '@/access/authenticated'
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { CollectionConfig, slugField } from 'payload'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
@@ -6,10 +6,10 @@ import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 export const Albums: CollectionConfig<'albums'> = {
   slug: 'albums',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticated,
-    update: authenticated,
+    create: isAdminOrEditor,
+    delete: isAdminOrEditor,
+    read: isAdminOrEditor,
+    update: isAdminOrEditor,
   },
   admin: {
     useAsTitle: 'title',

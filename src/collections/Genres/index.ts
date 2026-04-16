@@ -1,19 +1,19 @@
 import type { CollectionConfig } from 'payload'
 
-import { authenticated } from '@/access/authenticated'
+import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { slugField } from 'payload'
-import { anyone } from '@/access/anyone'
 
 export const Genres: CollectionConfig = {
   slug: 'genres',
   access: {
-    create: authenticated,
-    delete: authenticated,
-    read: authenticated,
-    update: authenticated,
+    create: isAdminOrEditor,
+    delete: isAdminOrEditor,
+    read: isAdminOrEditor,
+    update: isAdminOrEditor,
   },
   admin: {
     useAsTitle: 'title',
+    hidden: ({ user }) => user?.role !== 'admin',
   },
   fields: [
     {
