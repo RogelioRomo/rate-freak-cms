@@ -93,7 +93,7 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
           item: { relationTo: collectionSlug, value: itemId },
           rating: numRating,
           reviewText,
-          ...(type && { type }),
+          ...(type && { type: parseInt(type, 10) }),
           user: user.id,
         }),
       })
@@ -160,7 +160,7 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
                 </SelectTrigger>
                 <SelectContent>
                   {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
+                    <SelectItem key={cat.id} value={String(cat.id)}>
                       {cat.title}
                     </SelectItem>
                   ))}
