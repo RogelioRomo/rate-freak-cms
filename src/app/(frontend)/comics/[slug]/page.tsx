@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation'
 
 import { Media } from '@/components/Media'
 import PageClient from './page.client'
+import { ReviewSheet } from '@/components/ReviewSheet'
 
 export const dynamic = 'force-static'
 export const revalidate = 600
@@ -59,7 +60,10 @@ export default async function ComicPage({ params: paramsPromise }: Args) {
             </div>
           </div>
           <div className="flex-1 space-y-4">
-            <h1 className="text-3xl font-bold">{item.title}</h1>
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-3xl font-bold">{item.title}</h1>
+              <ReviewSheet itemId={item.id} collectionSlug="comics" itemTitle={item.title} />
+            </div>
             {author && <p className="text-lg text-muted-foreground">{author.name}</p>}
 
             {reviews.length > 0 && (

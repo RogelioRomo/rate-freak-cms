@@ -6,6 +6,7 @@ import React, { cache } from 'react'
 import { notFound } from 'next/navigation'
 
 import { Media } from '@/components/Media'
+import { ReviewSheet } from '@/components/ReviewSheet'
 import PageClient from './page.client'
 
 export const dynamic = 'force-static'
@@ -59,7 +60,10 @@ export default async function BookPage({ params: paramsPromise }: Args) {
             </div>
           </div>
           <div className="flex-1 space-y-4">
-            <h1 className="text-3xl font-bold">{item.title}</h1>
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-3xl font-bold">{item.title}</h1>
+              <ReviewSheet itemId={item.id} collectionSlug="albums" itemTitle={item.title} />
+            </div>
             {author && <p className="text-lg text-muted-foreground">{author.name}</p>}
 
             {reviews.length > 0 && (
