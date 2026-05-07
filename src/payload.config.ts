@@ -24,6 +24,8 @@ import { Shows } from './collections/Shows'
 import { Tracks } from './collections/Tracks'
 import { Authors } from './collections/Authors'
 import { Reviews } from './collections/Reviews'
+import { Backlog } from './collections/Backlog'
+import { Favorites } from './collections/Favorites'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -85,6 +87,8 @@ export default buildConfig({
     Mangas,
     Tracks,
     Shows,
+    Backlog,
+    Favorites,
     Artists,
     Authors,
     Categories,

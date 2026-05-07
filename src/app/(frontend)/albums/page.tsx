@@ -69,6 +69,6 @@ export default async function Page() {
 
 export function generateMetadata(): Metadata {
   return {
-    title: 'Albums | Rate Freak',
+    title: 'Albums',
   }
 }

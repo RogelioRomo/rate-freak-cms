@@ -82,7 +82,7 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { pageNumber } = await paramsPromise
   return {
-    title: `Comics Page ${pageNumber || ''} | Rate Freak`,
+    title: `Comics Page ${pageNumber || ''}`,
   }
 }
 

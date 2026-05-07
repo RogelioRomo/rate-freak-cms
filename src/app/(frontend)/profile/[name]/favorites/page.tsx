@@ -5,15 +5,10 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
-import { ReviewCard } from '@/components/ReviewCard'
+import { BacklogCard } from '@/components/BacklogCard'
 import { PageRange } from '@/components/PageRange'
 
 const LIMIT = 12
-
-type Args = {
-  params: Promise<{ name: string }>
-  searchParams: Promise<{ page?: string }>
-}
 
 const collectionFilters = [
   { slug: 'albums', label: 'Albums' },
@@ -24,7 +19,12 @@ const collectionFilters = [
   { slug: 'shows', label: 'Shows' },
 ]
 
-export default async function ProfileReviewsPage({
+type Args = {
+  params: Promise<{ name: string }>
+  searchParams: Promise<{ page?: string }>
+}
+
+export default async function ProfileFavoritesPage({
   params: paramsPromise,
   searchParams: searchParamsPromise,
 }: Args) {
@@ -46,8 +46,8 @@ export default async function ProfileReviewsPage({
   const user = users[0]
   if (!user) return notFound()
 
-  const reviews = await payload.find({
-    collection: 'reviews',
+  const favorites = await payload.find({
+    collection: 'favorites',
     where: { user: { equals: user.id } },
     depth: 2,
     limit: LIMIT,
@@ -56,7 +56,7 @@ export default async function ProfileReviewsPage({
     sort: '-createdAt',
   })
 
-  const basePath = `/profile/${encodeURIComponent(user.name ?? '')}/reviews`
+  const basePath = `/profile/${encodeURIComponent(user.name ?? '')}/favorites`
 
   return (
     <div className="container space-y-8">
@@ -79,26 +79,26 @@ export default async function ProfileReviewsPage({
       </nav>
 
       <PageRange
-        collectionLabels={{ plural: 'Reviews', singular: 'Review' }}
-        currentPage={reviews.page}
+        collectionLabels={{ plural: 'Favorites', singular: 'Favorite' }}
+        currentPage={favorites.page}
         limit={LIMIT}
-        totalDocs={reviews.totalDocs}
+        totalDocs={favorites.totalDocs}
       />
 
-      {reviews.docs.length > 0 ? (
+      {favorites.docs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {reviews.docs.map((review) => (
-            <ReviewCard
-              key={review.id}
-              review={review as React.ComponentProps<typeof ReviewCard>['review']}
+          {favorites.docs.map((entry) => (
+            <BacklogCard
+              key={entry.id}
+              entry={entry as React.ComponentProps<typeof BacklogCard>['entry']}
             />
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground">No reviews yet.</p>
+        <p className="text-muted-foreground">No favorites yet.</p>
       )}
 
-      {reviews.totalPages > 1 && (
+      {favorites.totalPages > 1 && (
         <div className="flex items-center justify-center gap-4">
           {currentPage > 1 && (
             <Link
@@ -109,9 +109,9 @@ export default async function ProfileReviewsPage({
             </Link>
           )}
           <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {reviews.totalPages}
+            Page {currentPage} of {favorites.totalPages}
           </span>
-          {currentPage < reviews.totalPages && (
+          {currentPage < favorites.totalPages && (
             <Link
               href={`${basePath}?page=${currentPage + 1}`}
               className="rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-accent"
@@ -130,6 +130,6 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const decodedName = decodeURIComponent(name)
 
   return {
-    title: `Reviews by ${decodedName}`,
+    title: `Favorites — ${decodedName}`,
   }
 }

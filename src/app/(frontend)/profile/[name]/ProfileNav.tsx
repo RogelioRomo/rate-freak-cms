@@ -12,6 +12,8 @@ export default function ProfileNav({ basePath }: Props) {
 
   const isOverview = pathname === basePath || pathname === `${basePath}/`
   const isReviews = pathname.startsWith(`${basePath}/reviews`)
+  const isBacklog = pathname.startsWith(`${basePath}/backlog`)
+  const isFavorites = pathname.startsWith(`${basePath}/favorites`)
 
   const activeClass = 'text-sm font-semibold border-b-2 border-primary pb-2 text-primary'
   const inactiveClass = 'text-sm font-medium text-muted-foreground hover:text-foreground pb-2'
@@ -23,6 +25,12 @@ export default function ProfileNav({ basePath }: Props) {
       </Link>
       <Link href={`${basePath}/reviews`} className={isReviews ? activeClass : inactiveClass}>
         Reviews
+      </Link>
+      <Link href={`${basePath}/backlog`} className={isBacklog ? activeClass : inactiveClass}>
+        Backlog
+      </Link>
+      <Link href={`${basePath}/favorites`} className={isFavorites ? activeClass : inactiveClass}>
+        Favorites
       </Link>
     </nav>
   )

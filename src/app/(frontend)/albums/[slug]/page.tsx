@@ -7,6 +7,8 @@ import { notFound } from 'next/navigation'
 
 import { Media } from '@/components/Media'
 import { ReviewSheet } from '@/components/ReviewSheet'
+import { BacklogButton } from '@/components/BacklogButton'
+import { FavoriteButton } from '@/components/FavoriteButton'
 import PageClient from './page.client'
 
 export const dynamic = 'force-static'
@@ -62,7 +64,11 @@ export default async function AlbumPage({ params: paramsPromise }: Args) {
           <div className="flex-1 space-y-4">
             <div className="flex items-center justify-between gap-4">
               <h1 className="text-3xl font-bold">{item.title}</h1>
-              <ReviewSheet itemId={item.id} collectionSlug="albums" itemTitle={item.title} />
+              <div className="flex gap-2">
+                <ReviewSheet itemId={item.id} collectionSlug="albums" itemTitle={item.title} />
+                <BacklogButton itemId={item.id} collectionSlug="albums" />
+                <FavoriteButton itemId={item.id} collectionSlug="albums" />
+              </div>
             </div>
             {artist && <p className="text-lg text-muted-foreground">{artist.name}</p>}
 
@@ -111,7 +117,7 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const result = await queryBySlug({ slug: decodedSlug })
 
   return {
-    title: result ? `${result.item.title} | Rate Freak` : 'Not Found',
+    title: result ? `${result.item.title}` : 'Not Found',
   }
 }
 

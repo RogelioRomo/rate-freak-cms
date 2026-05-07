@@ -74,6 +74,8 @@ export interface Config {
     mangas: Mangas;
     tracks: Track;
     shows: Show;
+    backlog: Backlog;
+    favorites: Favorite;
     artists: Artist;
     authors: Author;
     categories: Category;
@@ -106,6 +108,8 @@ export interface Config {
     mangas: MangasSelect<false> | MangasSelect<true>;
     tracks: TracksSelect<false> | TracksSelect<true>;
     shows: ShowsSelect<false> | ShowsSelect<true>;
+    backlog: BacklogSelect<false> | BacklogSelect<true>;
+    favorites: FavoritesSelect<false> | FavoritesSelect<true>;
     artists: ArtistsSelect<false> | ArtistsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
@@ -484,6 +488,78 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backlog".
+ */
+export interface Backlog {
+  id: number;
+  item:
+    | {
+        relationTo: 'albums';
+        value: number | Album;
+      }
+    | {
+        relationTo: 'tracks';
+        value: number | Track;
+      }
+    | {
+        relationTo: 'books';
+        value: number | Book;
+      }
+    | {
+        relationTo: 'comics';
+        value: number | Comic;
+      }
+    | {
+        relationTo: 'mangas';
+        value: number | Mangas;
+      }
+    | {
+        relationTo: 'shows';
+        value: number | Show;
+      };
+  user: number | User;
+  type?: (number | null) | Category;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "favorites".
+ */
+export interface Favorite {
+  id: number;
+  item:
+    | {
+        relationTo: 'albums';
+        value: number | Album;
+      }
+    | {
+        relationTo: 'tracks';
+        value: number | Track;
+      }
+    | {
+        relationTo: 'books';
+        value: number | Book;
+      }
+    | {
+        relationTo: 'comics';
+        value: number | Comic;
+      }
+    | {
+        relationTo: 'mangas';
+        value: number | Mangas;
+      }
+    | {
+        relationTo: 'shows';
+        value: number | Show;
+      };
+  user: number | User;
+  type?: (number | null) | Category;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1186,6 +1262,14 @@ export interface PayloadLockedDocument {
         value: number | Show;
       } | null)
     | ({
+        relationTo: 'backlog';
+        value: number | Backlog;
+      } | null)
+    | ({
+        relationTo: 'favorites';
+        value: number | Favorite;
+      } | null)
+    | ({
         relationTo: 'artists';
         value: number | Artist;
       } | null)
@@ -1382,6 +1466,28 @@ export interface ShowsSelect<T extends boolean = true> {
   cover?: T;
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backlog_select".
+ */
+export interface BacklogSelect<T extends boolean = true> {
+  item?: T;
+  user?: T;
+  type?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "favorites_select".
+ */
+export interface FavoritesSelect<T extends boolean = true> {
+  item?: T;
+  user?: T;
+  type?: T;
   updatedAt?: T;
   createdAt?: T;
 }

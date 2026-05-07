@@ -60,6 +60,6 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const decodedName = decodeURIComponent(name)
 
   return {
-    title: `${decodedName} | Rate Freak`,
+    title: `${decodedName}`,
   }
 }

@@ -31,7 +31,7 @@ export default async function ProfileLayout({ children, params: paramsPromise }:
   const basePath = `/profile/${encodeURIComponent(user.name ?? '')}`
 
   return (
-    <div className="pt-24 pb-24">
+    <div className="pt-8 pb-24">
       <PageClient />
       <div className="container mb-8">
         <h1 className="text-3xl font-bold">{user.name}</h1>

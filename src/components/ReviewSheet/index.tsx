@@ -29,6 +29,7 @@ type Props = {
 type Category = { id: string; title: string }
 
 export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle }) => {
+  const [userId, setUserId] = useState<string | null>(null)
   const [rating, setRating] = useState('')
   const [reviewText, setReviewText] = useState('')
   const [type, setType] = useState('')
@@ -37,11 +38,19 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
+    fetch(`${getClientSideURL()}/api/users/me`, { credentials: 'include' })
+      .then((r) => r.json())
+      .then(({ user }) => { if (user) setUserId(user.id) })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return
     fetch(`${getClientSideURL()}/api/categories?limit=100&depth=0`)
       .then((r) => r.json())
       .then((data) => setCategories(data?.docs ?? []))
       .catch(() => {})
-  }, [])
+  }, [userId])
 
   const reset = () => {
     setRating('')
@@ -69,22 +78,14 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
     setRating(val)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const numRating = parseFloat(rating)
-    if (!rating || isNaN(numRating) || numRating <= 0) return
+    if (!rating || isNaN(numRating) || numRating <= 0 || !userId) return
 
     setStatus('loading')
 
     try {
-      const meRes = await fetch(`${getClientSideURL()}/api/users/me`, { credentials: 'include' })
-      const { user } = await meRes.json()
-
-      if (!user) {
-        setStatus('error')
-        return
-      }
-
       const res = await fetch(`${getClientSideURL()}/api/reviews`, {
         method: 'POST',
         credentials: 'include',
@@ -94,7 +95,7 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
           rating: numRating,
           reviewText,
           ...(type && { type: parseInt(type, 10) }),
-          user: user.id,
+          user: userId,
         }),
       })
 
@@ -104,6 +105,8 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
       setStatus('error')
     }
   }
+
+  if (!userId) return null
 
   const numRating = parseFloat(rating)
   const ratingInvalid = !rating || isNaN(numRating) || numRating <= 0

@@ -5,7 +5,7 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { notFound } from 'next/navigation'
 import React from 'react'
-import { ReviewCard } from '@/components/ReviewCard'
+import { BacklogCard } from '@/components/BacklogCard'
 import { PageRange } from '@/components/PageRange'
 
 const LIMIT = 12
@@ -26,7 +26,7 @@ type Args = {
   searchParams: Promise<{ page?: string }>
 }
 
-export default async function ProfileReviewsByCollectionPage({
+export default async function ProfileFavoritesByCollectionPage({
   params: paramsPromise,
   searchParams: searchParamsPromise,
 }: Args) {
@@ -52,8 +52,8 @@ export default async function ProfileReviewsByCollectionPage({
   const user = users[0]
   if (!user) return notFound()
 
-  const reviews = await payload.find({
-    collection: 'reviews',
+  const favorites = await payload.find({
+    collection: 'favorites',
     where: {
       and: [{ user: { equals: user.id } }, { 'item.relationTo': { equals: collection } }],
     },
@@ -64,7 +64,7 @@ export default async function ProfileReviewsByCollectionPage({
     sort: '-createdAt',
   })
 
-  const basePath = `/profile/${encodeURIComponent(user.name ?? '')}/reviews`
+  const basePath = `/profile/${encodeURIComponent(user.name ?? '')}/favorites`
   const collectionPath = `${basePath}/${collection}`
   const label = collectionLabels[collection] ?? collection
 
@@ -93,26 +93,26 @@ export default async function ProfileReviewsByCollectionPage({
       </nav>
 
       <PageRange
-        collectionLabels={{ plural: `${label} Reviews`, singular: `${label} Review` }}
-        currentPage={reviews.page}
+        collectionLabels={{ plural: `${label} Favorites`, singular: `${label} Favorite` }}
+        currentPage={favorites.page}
         limit={LIMIT}
-        totalDocs={reviews.totalDocs}
+        totalDocs={favorites.totalDocs}
       />
 
-      {reviews.docs.length > 0 ? (
+      {favorites.docs.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {reviews.docs.map((review) => (
-            <ReviewCard
-              key={review.id}
-              review={review as React.ComponentProps<typeof ReviewCard>['review']}
+          {favorites.docs.map((entry) => (
+            <BacklogCard
+              key={entry.id}
+              entry={entry as React.ComponentProps<typeof BacklogCard>['entry']}
             />
           ))}
         </div>
       ) : (
-        <p className="text-muted-foreground">No {label.toLowerCase()} reviews yet.</p>
+        <p className="text-muted-foreground">No {label.toLowerCase()} favorites yet.</p>
       )}
 
-      {reviews.totalPages > 1 && (
+      {favorites.totalPages > 1 && (
         <div className="flex items-center justify-center gap-4">
           {currentPage > 1 && (
             <Link
@@ -123,9 +123,9 @@ export default async function ProfileReviewsByCollectionPage({
             </Link>
           )}
           <span className="text-sm text-muted-foreground">
-            Page {currentPage} of {reviews.totalPages}
+            Page {currentPage} of {favorites.totalPages}
           </span>
-          {currentPage < reviews.totalPages && (
+          {currentPage < favorites.totalPages && (
             <Link
               href={`${collectionPath}?page=${currentPage + 1}`}
               className="rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-accent"
@@ -145,6 +145,6 @@ export async function generateMetadata({ params: paramsPromise }: Args): Promise
   const label = collectionLabels[collection] ?? collection
 
   return {
-    title: `${label} Reviews by ${decodedName}`,
+    title: `${label} Favorites — ${decodedName}`,
   }
 }
