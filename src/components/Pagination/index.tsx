@@ -3,7 +3,9 @@ import {
   Pagination as PaginationComponent,
   PaginationContent,
   PaginationEllipsis,
+  PaginationFirst,
   PaginationItem,
+  PaginationLast,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
@@ -31,6 +33,15 @@ export const Pagination: React.FC<{
     <div className={cn('my-12', className)}>
       <PaginationComponent>
         <PaginationContent>
+          <PaginationItem>
+            <PaginationFirst
+              disabled={!hasPrevPage}
+              onClick={() => {
+                router.push(`${basePath}/page/1`)
+              }}
+            />
+          </PaginationItem>
+
           <PaginationItem>
             <PaginationPrevious
               disabled={!hasPrevPage}
@@ -95,8 +106,20 @@ export const Pagination: React.FC<{
               }}
             />
           </PaginationItem>
+
+          <PaginationItem>
+            <PaginationLast
+              disabled={!hasNextPage}
+              onClick={() => {
+                router.push(`${basePath}/page/${totalPages}`)
+              }}
+            />
+          </PaginationItem>
         </PaginationContent>
       </PaginationComponent>
+      <p className="text-center text-sm text-muted-foreground mb-2">
+        Page {page} of {totalPages}
+      </p>
     </div>
   )
 }

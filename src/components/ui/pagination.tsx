@@ -2,7 +2,7 @@ import type { ButtonProps } from '@/components/ui/button'
 
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/utilities/ui'
-import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, MoreHorizontal } from 'lucide-react'
 import * as React from 'react'
 
 const Pagination = ({ className, ...props }: React.ComponentProps<'nav'>) => (
@@ -43,6 +43,18 @@ const PaginationLink = ({ className, isActive, size = 'icon', ...props }: Pagina
   />
 )
 
+const PaginationFirst = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to first page"
+    className={cn('gap-1 pl-2.5', className)}
+    size="default"
+    {...props}
+  >
+    <ChevronsLeft className="h-4 w-4" />
+    <span>First</span>
+  </PaginationLink>
+)
+
 const PaginationPrevious = ({
   className,
   ...props
@@ -70,6 +82,18 @@ const PaginationNext = ({ className, ...props }: React.ComponentProps<typeof Pag
   </PaginationLink>
 )
 
+const PaginationLast = ({ className, ...props }: React.ComponentProps<typeof PaginationLink>) => (
+  <PaginationLink
+    aria-label="Go to last page"
+    className={cn('gap-1 pr-2.5', className)}
+    size="default"
+    {...props}
+  >
+    <span>Last</span>
+    <ChevronsRight className="h-4 w-4" />
+  </PaginationLink>
+)
+
 const PaginationEllipsis = ({ className, ...props }: React.ComponentProps<'span'>) => (
   <span
     aria-hidden
@@ -85,7 +109,9 @@ export {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
+  PaginationFirst,
   PaginationItem,
+  PaginationLast,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
