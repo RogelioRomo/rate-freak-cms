@@ -26,6 +26,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ data, user }) => {
   const navItems = data?.navItems || []
   const router = useRouter()
+  const [sheetOpen, setSheetOpen] = React.useState(false)
 
   return (
     <nav className="flex gap-3 items-center">
@@ -38,7 +39,7 @@ export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ d
 
       {/* Mobile hamburger menu - pages links only */}
       <div className="flex md:hidden">
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <button aria-label="Open menu">
               <MenuIcon className="w-5 text-primary" />
@@ -50,7 +51,11 @@ export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ d
             </SheetHeader>
             <div className="flex flex-col gap-4 mt-4">
               {navItems.map(({ link }, i) => {
-                return <CMSLink key={i} {...link} appearance="link" />
+                return (
+                  <div key={i} onClick={() => setSheetOpen(false)}>
+                    <CMSLink {...link} appearance="link" />
+                  </div>
+                )
               })}
             </div>
           </SheetContent>
