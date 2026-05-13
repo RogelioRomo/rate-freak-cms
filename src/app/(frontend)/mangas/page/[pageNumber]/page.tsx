@@ -62,6 +62,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                 title={manga.title}
                 href={`/mangas/${manga.slug}`}
                 cover={typeof manga.cover === 'object' ? (manga.cover as MediaType) : null}
+                aspect="portrait"
               />
             ))}
           </div>

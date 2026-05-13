@@ -16,12 +16,12 @@ const sections = [
 ] as const
 
 const collections = [
-  { slug: 'albums' as const, label: 'Albums' },
-  { slug: 'tracks' as const, label: 'Tracks' },
-  { slug: 'books' as const, label: 'Books' },
-  { slug: 'comics' as const, label: 'Comics' },
-  { slug: 'mangas' as const, label: 'Mangas' },
-  { slug: 'shows' as const, label: 'Shows' },
+  { slug: 'albums' as const, label: 'Albums', aspect: 'square' as const },
+  { slug: 'tracks' as const, label: 'Tracks', aspect: 'square' as const },
+  { slug: 'books' as const, label: 'Books', aspect: 'portrait' as const },
+  { slug: 'comics' as const, label: 'Comics', aspect: 'portrait' as const },
+  { slug: 'mangas' as const, label: 'Mangas', aspect: 'portrait' as const },
+  { slug: 'shows' as const, label: 'Shows', aspect: 'portrait' as const },
 ]
 
 export const revalidate = 60 // Revalidate every 60 seconds
@@ -30,14 +30,14 @@ export default async function HomePage() {
   const payload = await getPayload({ config })
 
   const results = await Promise.all(
-    collections.map(async ({ slug, label }) => {
+    collections.map(async ({ slug, label, aspect }) => {
       const { docs } = await payload.find({
         collection: slug,
         limit: 5,
         sort: '-createdAt',
         depth: 1,
       })
-      return { slug, label, docs }
+      return { slug, label, aspect, docs }
     }),
   )
 
@@ -65,7 +65,7 @@ export default async function HomePage() {
 
       {/* Latest items per collection */}
       {results.map(
-        ({ slug, label, docs }) =>
+        ({ slug, label, docs, aspect }) =>
           docs.length > 0 && (
             <section key={slug} className="space-y-4">
               <div className="flex items-center justify-between">
@@ -81,6 +81,7 @@ export default async function HomePage() {
                     title={doc.title}
                     href={`/${slug}/${doc.slug}`}
                     cover={typeof doc.cover === 'object' ? (doc.cover as MediaType) : null}
+                    aspect={aspect}
                   />
                 ))}
               </div>

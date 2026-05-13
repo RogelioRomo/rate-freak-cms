@@ -50,6 +50,7 @@ export default async function Page() {
                 title={book.title}
                 href={`/books/${book.slug}`}
                 cover={typeof book.cover === 'object' ? (book.cover as MediaType) : null}
+                aspect="portrait"
               />
             ))}
           </div>

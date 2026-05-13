@@ -51,7 +51,7 @@ export default async function ComicPage({ params: paramsPromise }: Args) {
       <div className="container">
         <div className="flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-80 shrink-0">
-            <div className="relative w-full aspect-square rounded-lg overflow-hidden">
+            <div className="relative w-full aspect-2/3 rounded-lg overflow-hidden">
               {cover ? (
                 <Media resource={cover} fill imgClassName="object-cover" />
               ) : (

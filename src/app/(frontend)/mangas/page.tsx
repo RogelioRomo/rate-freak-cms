@@ -50,6 +50,7 @@ export default async function Page() {
                 title={manga.title}
                 href={`/mangas/${manga.slug}`}
                 cover={typeof manga.cover === 'object' ? (manga.cover as MediaType) : null}
+                aspect="portrait"
               />
             ))}
           </div>

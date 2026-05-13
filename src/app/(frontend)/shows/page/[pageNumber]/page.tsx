@@ -62,6 +62,7 @@ export default async function Page({ params: paramsPromise }: Args) {
                 title={show.title}
                 href={`/shows/${show.slug}`}
                 cover={typeof show.cover === 'object' ? (show.cover as MediaType) : null}
+                aspect="portrait"
               />
             ))}
           </div>

@@ -9,13 +9,14 @@ export type ItemCardProps = {
   href: string
   cover?: MediaType | null
   className?: string
+  aspect?: 'square' | 'portrait'
 }
 
-export const ItemCard: React.FC<ItemCardProps> = ({ title, href, cover, className }) => {
+export const ItemCard: React.FC<ItemCardProps> = ({ title, href, cover, className, aspect = 'square' }) => {
   return (
     <Link href={href} className="block">
       <article className={cn('border border-border rounded-lg overflow-hidden bg-card', className)}>
-        <div className="relative w-full aspect-square">
+        <div className={cn('relative w-full', aspect === 'portrait' ? 'aspect-2/3' : 'aspect-square')}>
           {cover ? (
             <Media resource={cover} size="33vw" fill imgClassName="object-cover" />
           ) : (

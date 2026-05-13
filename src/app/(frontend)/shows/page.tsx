@@ -50,6 +50,7 @@ export default async function Page() {
                 title={show.title}
                 href={`/shows/${show.slug}`}
                 cover={typeof show.cover === 'object' ? (show.cover as MediaType) : null}
+                aspect="portrait"
               />
             ))}
           </div>
