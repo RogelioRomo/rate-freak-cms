@@ -79,10 +79,22 @@ export default async function ComicPage({ params: paramsPromise }: Args) {
                   <div key={review.id} className="border border-border rounded-lg p-4 space-y-2">
                     <div className="flex items-center justify-between">
                       {review.user && (
-                        <div className="text-xs text-muted-foreground">
-                          {typeof review.user === 'object' && 'name' in review.user
-                            ? review.user.name
-                            : ''}
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>
+                            {typeof review.user === 'object' && 'name' in review.user
+                              ? review.user.name
+                              : ''}
+                            &nbsp; |
+                          </span>
+                          {review.publishedAt && (
+                            <span>
+                              {new Date(review.publishedAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                              })}
+                            </span>
+                          )}
                         </div>
                       )}
                       <div className="flex items-center gap-1">

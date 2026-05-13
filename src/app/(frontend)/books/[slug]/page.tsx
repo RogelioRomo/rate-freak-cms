@@ -77,16 +77,37 @@ export default async function BookPage({ params: paramsPromise }: Args) {
                 <h2 className="text-xl font-semibold">Reviews</h2>
                 {reviews.map((review) => (
                   <div key={review.id} className="border border-border rounded-lg p-4 space-y-2">
-                    <div className="flex items-center gap-1">
-                      {Array.from({ length: 5 }, (_, i) => (
-                        <span
-                          key={i}
-                          className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}
-                        >
-                          ★
-                        </span>
-                      ))}
-                      <span className="ml-1 text-sm">{review.rating}/5</span>
+                    <div className="flex items-center justify-between">
+                      {review.user && (
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>
+                            {typeof review.user === 'object' && 'name' in review.user
+                              ? review.user.name
+                              : ''}
+                            &nbsp; |
+                          </span>
+                          {review.publishedAt && (
+                            <span>
+                              {new Date(review.publishedAt).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                              })}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 5 }, (_, i) => (
+                          <span
+                            key={i}
+                            className={i < review.rating ? 'text-yellow-400' : 'text-gray-300'}
+                          >
+                            ★
+                          </span>
+                        ))}
+                        <span className="ml-1 text-sm">{review.rating}/5</span>
+                      </div>
                     </div>
                     {review.reviewText && (
                       <p className="text-muted-foreground">{review.reviewText}</p>

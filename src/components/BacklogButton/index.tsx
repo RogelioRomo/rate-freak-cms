@@ -74,7 +74,8 @@ export const BacklogButton: React.FC<Props> = ({ itemId, collectionSlug }) => {
     }
   }
 
-  if (status === 'loading' || !userId) return null
+  if (status === 'loading') return <Button variant="outline" disabled><Bookmark className="text-muted-foreground" /></Button>
+  if (!userId) return null
 
   return (
     <Button variant="outline" onClick={handleClick} disabled={status === 'busy'}>

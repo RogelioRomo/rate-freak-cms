@@ -30,6 +30,7 @@ type Category = { id: string; title: string }
 
 export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle }) => {
   const [userId, setUserId] = useState<string | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
   const [rating, setRating] = useState('')
   const [reviewText, setReviewText] = useState('')
   const [type, setType] = useState('')
@@ -42,6 +43,7 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
       .then((r) => r.json())
       .then(({ user }) => { if (user) setUserId(user.id) })
       .catch(() => {})
+      .finally(() => setAuthLoading(false))
   }, [])
 
   useEffect(() => {
@@ -106,6 +108,7 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
     }
   }
 
+  if (authLoading) return <Button variant="outline" disabled>Review</Button>
   if (!userId) return null
 
   const numRating = parseFloat(rating)
