@@ -1,7 +1,8 @@
 import { isAdminOrEditor } from '@/access/isAdminOrEditor'
-import { CollectionConfig, slugField } from 'payload'
+import { CollectionConfig } from 'payload'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
+import { generateItemSlug } from '@/utilities/generateItemSlug'
 
 export const Albums: CollectionConfig<'albums'> = {
   slug: 'albums',
@@ -74,9 +75,17 @@ export const Albums: CollectionConfig<'albums'> = {
         afterChange: [ensureMediaFolder()],
       },
     },
-    slugField(),
+    {
+      name: 'slug',
+      type: 'text',
+      index: true,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+      },
+    },
   ],
   hooks: {
-    beforeChange: [populatePublishedAt],
+    beforeChange: [populatePublishedAt, generateItemSlug({ creatorField: 'artist', creatorCollection: 'artists' })],
   },
 }

@@ -227,11 +227,7 @@ export interface Album {
   publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -363,11 +359,7 @@ export interface Track {
   publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -382,11 +374,7 @@ export interface Book {
   publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -417,11 +405,7 @@ export interface Comic {
   publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -436,11 +420,7 @@ export interface Mangas {
   publishedAt?: string | null;
   type?: (number | null) | Category;
   cover: number | Media;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
+  slug?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1389,7 +1369,6 @@ export interface AlbumsSelect<T extends boolean = true> {
   publishedAt?: T;
   type?: T;
   cover?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1404,7 +1383,6 @@ export interface BooksSelect<T extends boolean = true> {
   publishedAt?: T;
   type?: T;
   cover?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1419,7 +1397,6 @@ export interface ComicsSelect<T extends boolean = true> {
   publishedAt?: T;
   type?: T;
   cover?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1434,7 +1411,6 @@ export interface MangasSelect<T extends boolean = true> {
   publishedAt?: T;
   type?: T;
   cover?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1450,7 +1426,6 @@ export interface TracksSelect<T extends boolean = true> {
   publishedAt?: T;
   type?: T;
   cover?: T;
-  generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;

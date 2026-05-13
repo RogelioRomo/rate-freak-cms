@@ -21,7 +21,7 @@ export const generateReviewSlug: CollectionBeforeValidateHook = async ({
     data.item && typeof data.item === 'object' ? (data.item as { value: string }).value : data.item
 
   let userName = ''
-  let itemTitle = ''
+  let itemSlug = ''
 
   try {
     if (userId) {
@@ -36,14 +36,14 @@ export const generateReviewSlug: CollectionBeforeValidateHook = async ({
         depth: 0,
         req,
       })
-      itemTitle = (item as { title?: string }).title ?? ''
+      itemSlug = (item as { slug?: string }).slug ?? ''
     }
   } catch {
     // fall through — slug will be left empty and can be set manually
   }
 
-  if (userName && itemTitle) {
-    data.slug = `${toKebabCase(userName)}-${toKebabCase(itemTitle)}`
+  if (userName && itemSlug) {
+    data.slug = `${toKebabCase(userName)}-${itemSlug}`
   }
 
   return data
