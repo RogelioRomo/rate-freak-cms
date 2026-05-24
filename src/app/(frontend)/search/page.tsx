@@ -3,24 +3,29 @@ import type { Metadata } from 'next/types'
 import { ItemCard } from '@/components/ItemCard'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
-import React from 'react'
 import { Search } from '@/search/Component'
 import PageClient from './page.client'
 import type { Media } from '@/payload-types'
+import Link from 'next/link'
+
+const LIMIT = 12
 
 type Args = {
   searchParams: Promise<{
     q: string
+    page?: string
   }>
 }
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
-  const { q: query } = await searchParamsPromise
+  const { q: query, page: pageParam } = await searchParamsPromise
+  const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
   const payload = await getPayload({ config: configPromise })
 
   const posts = await payload.find({
     collection: 'search',
     depth: 1,
-    limit: 6,
+    limit: LIMIT,
+    page,
     select: {
       title: true,
       slug: true,
@@ -28,40 +33,32 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       meta: true,
       doc: true,
     },
-    // pagination: false reduces overhead if you don't need totalDocs
-    pagination: false,
     ...(query
       ? {
           where: {
             or: [
-              {
-                title: {
-                  like: query,
-                },
-              },
-              {
-                'meta.description': {
-                  like: query,
-                },
-              },
-              {
-                'meta.title': {
-                  like: query,
-                },
-              },
-              {
-                slug: {
-                  like: query,
-                },
-              },
+              { title: { like: query } },
+              { 'meta.description': { like: query } },
+              { 'meta.title': { like: query } },
+              { slug: { like: query } },
+              { contributor: { like: query } },
             ],
           },
         }
       : {}),
   })
 
+  const { totalPages, hasPrevPage, hasNextPage } = posts
+
+  const buildHref = (p: number) => {
+    const params = new URLSearchParams()
+    if (query) params.set('q', query)
+    params.set('page', String(p))
+    return `/search?${params.toString()}`
+  }
+
   return (
-    <div className="pt-24 pb-24">
+    <div className="pt-5 pb-24">
       <PageClient />
       <div className="container mb-16">
         <div className="prose dark:prose-invert max-w-none text-center">
@@ -82,12 +79,44 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
               const cover = (result.meta?.image as Media) || null
 
               return (
-                <div className="col-span-4" key={index}>
+                <div className="col-span-2" key={index}>
                   <ItemCard title={result.title} href={href} cover={cover} className="h-full" />
                 </div>
               )
             })}
           </div>
+
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-4 mt-12">
+              {hasPrevPage ? (
+                <Link
+                  href={buildHref(page - 1)}
+                  className="px-4 py-2 border border-border rounded hover:bg-card transition-colors"
+                >
+                  Previous
+                </Link>
+              ) : (
+                <span className="px-4 py-2 border border-border rounded opacity-40 cursor-not-allowed">
+                  Previous
+                </span>
+              )}
+              <span className="text-sm text-muted">
+                {page} / {totalPages}
+              </span>
+              {hasNextPage ? (
+                <Link
+                  href={buildHref(page + 1)}
+                  className="px-4 py-2 border border-border rounded hover:bg-card transition-colors"
+                >
+                  Next
+                </Link>
+              ) : (
+                <span className="px-4 py-2 border border-border rounded opacity-40 cursor-not-allowed">
+                  Next
+                </span>
+              )}
+            </div>
+          )}
         </div>
       ) : (
         <div className="container">No results found.</div>

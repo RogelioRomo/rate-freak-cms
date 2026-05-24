@@ -13,9 +13,32 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
   // Resolve image: posts use meta.image, other collections use cover
   const image = meta?.image?.id || meta?.image || cover?.id || cover || undefined
 
+  // Resolve contributor name (artist for albums/tracks, author for books/comics/mangas)
+  let contributor: string | undefined
+  const creatorField = originalDoc.artist ?? originalDoc.author
+  if (creatorField) {
+    if (typeof creatorField === 'object' && creatorField.name) {
+      contributor = creatorField.name
+    } else if (typeof creatorField === 'string' || typeof creatorField === 'number') {
+      const creatorCollection = originalDoc.artist ? 'artists' : 'authors'
+      const creatorDoc = await req.payload.findByID({
+        collection: creatorCollection,
+        id: creatorField,
+        disableErrors: true,
+        depth: 0,
+        select: { name: true },
+        req,
+      })
+      if (creatorDoc) {
+        contributor = creatorDoc.name
+      }
+    }
+  }
+
   const modifiedDoc: DocToSync = {
     ...searchDoc,
     slug,
+    contributor,
     meta: {
       title: meta?.title || title,
       image,
