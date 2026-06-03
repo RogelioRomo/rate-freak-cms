@@ -1,6 +1,7 @@
 import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
+import { populateType } from '@/hooks/populateType'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
 import { CollectionConfig } from 'payload'
 
@@ -87,6 +88,10 @@ export const Tracks: CollectionConfig<'tracks'> = {
     },
   ],
   hooks: {
-    beforeChange: [populatePublishedAt, generateItemSlug({ creatorField: 'artist', creatorCollection: 'artists' })],
+    beforeChange: [
+      populatePublishedAt,
+      populateType('tracks'),
+      generateItemSlug({ creatorField: 'artist', creatorCollection: 'artists' }),
+    ],
   },
 }

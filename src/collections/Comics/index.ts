@@ -2,6 +2,7 @@ import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
+import { populateType } from '@/hooks/populateType'
 import { CollectionConfig } from 'payload'
 
 export const Comics: CollectionConfig<'comics'> = {
@@ -86,6 +87,10 @@ export const Comics: CollectionConfig<'comics'> = {
     },
   ],
   hooks: {
-    beforeChange: [populatePublishedAt, generateItemSlug({ creatorField: 'author', creatorCollection: 'authors' })],
+    beforeChange: [
+      populatePublishedAt,
+      populateType('comics'),
+      generateItemSlug({ creatorField: 'author', creatorCollection: 'authors' }),
+    ],
   },
 }

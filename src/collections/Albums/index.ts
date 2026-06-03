@@ -3,6 +3,7 @@ import { CollectionConfig } from 'payload'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
+import { populateType } from '@/hooks/populateType'
 
 export const Albums: CollectionConfig<'albums'> = {
   slug: 'albums',
@@ -86,6 +87,10 @@ export const Albums: CollectionConfig<'albums'> = {
     },
   ],
   hooks: {
-    beforeChange: [populatePublishedAt, generateItemSlug({ creatorField: 'artist', creatorCollection: 'artists' })],
+    beforeChange: [
+      populatePublishedAt,
+      populateType('albums'),
+      generateItemSlug({ creatorField: 'artist', creatorCollection: 'artists' }),
+    ],
   },
 }

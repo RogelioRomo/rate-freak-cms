@@ -1,6 +1,7 @@
 import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
+import { populateType } from '@/hooks/populateType'
 import { CollectionConfig, slugField } from 'payload'
 
 export const Shows: CollectionConfig<'shows'> = {
@@ -65,6 +66,6 @@ export const Shows: CollectionConfig<'shows'> = {
     slugField(),
   ],
   hooks: {
-    beforeChange: [populatePublishedAt],
+    beforeChange: [populatePublishedAt, populateType('tv-shows')],
   },
 }
