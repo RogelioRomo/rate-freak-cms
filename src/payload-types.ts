@@ -1080,6 +1080,7 @@ export interface Search {
         relationTo: 'tracks';
         value: number | Track;
       };
+  genre?: string | null;
   contributor?: string | null;
   slug?: string | null;
   meta?: {
@@ -1905,6 +1906,7 @@ export interface SearchSelect<T extends boolean = true> {
   title?: T;
   priority?: T;
   doc?: T;
+  genre?: T;
   contributor?: T;
   slug?: T;
   meta?:

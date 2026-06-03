@@ -13,6 +13,27 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
   // Resolve image: posts use meta.image, other collections use cover
   const image = meta?.image?.id || meta?.image || cover?.id || cover || undefined
 
+  // Resolve genre name
+  let genre: string | undefined
+  const genreField = originalDoc.genre
+  if (genreField) {
+    if (typeof genreField === 'object' && genreField.title) {
+      genre = genreField.title
+    } else if (typeof genreField === 'string' || typeof genreField === 'number') {
+      const genreDoc = await req.payload.findByID({
+        collection: 'genres',
+        id: genreField,
+        disableErrors: true,
+        depth: 0,
+        select: { title: true },
+        req,
+      })
+      if (genreDoc) {
+        genre = genreDoc.title
+      }
+    }
+  }
+
   // Resolve contributor name (artist for albums/tracks, author for books/comics/mangas)
   let contributor: string | undefined
   const creatorField = originalDoc.artist ?? originalDoc.author
@@ -39,6 +60,7 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
     ...searchDoc,
     slug,
     contributor,
+    genre,
     meta: {
       title: meta?.title || title,
       image,

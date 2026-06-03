@@ -4,22 +4,69 @@ import { ItemCard } from '@/components/ItemCard'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { Search } from '@/search/Component'
+import { SearchFilters } from './SearchFilters'
 import PageClient from './page.client'
 import type { Media } from '@/payload-types'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 const LIMIT = 12
 
 type Args = {
   searchParams: Promise<{
-    q: string
+    q?: string
     page?: string
+    genre?: string
+    type?: string
   }>
 }
+
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
-  const { q: query, page: pageParam } = await searchParamsPromise
+  const {
+    q: query,
+    page: pageParam,
+    genre: genreFilter,
+    type: typeFilter,
+  } = await searchParamsPromise
   const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
   const payload = await getPayload({ config: configPromise })
+
+  const [genresResult, categoriesResult] = await Promise.all([
+    payload.find({
+      collection: 'genres',
+      limit: 200,
+      select: { title: true },
+      sort: 'title',
+    }),
+    payload.find({
+      collection: 'categories',
+      limit: 50,
+      select: { title: true },
+      sort: 'title',
+    }),
+  ])
+
+  const andConditions: any[] = []
+
+  if (query) {
+    andConditions.push({
+      or: [
+        { title: { like: query } },
+        { 'meta.description': { like: query } },
+        { 'meta.title': { like: query } },
+        { slug: { like: query } },
+        { contributor: { like: query } },
+      ],
+    })
+  }
+
+  if (genreFilter) {
+    andConditions.push({ genre: { equals: genreFilter } })
+  }
+
+  if (typeFilter) {
+    andConditions.push({ 'categories.title': { equals: typeFilter } })
+  }
 
   const posts = await payload.find({
     collection: 'search',
@@ -33,19 +80,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       meta: true,
       doc: true,
     },
-    ...(query
-      ? {
-          where: {
-            or: [
-              { title: { like: query } },
-              { 'meta.description': { like: query } },
-              { 'meta.title': { like: query } },
-              { slug: { like: query } },
-              { contributor: { like: query } },
-            ],
-          },
-        }
-      : {}),
+    ...(andConditions.length > 0 ? { where: { and: andConditions } } : {}),
   })
 
   const { totalPages, hasPrevPage, hasNextPage } = posts
@@ -53,6 +88,8 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   const buildHref = (p: number) => {
     const params = new URLSearchParams()
     if (query) params.set('q', query)
+    if (genreFilter) params.set('genre', genreFilter)
+    if (typeFilter) params.set('type', typeFilter)
     params.set('page', String(p))
     return `/search?${params.toString()}`
   }
@@ -65,7 +102,13 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
           <h1 className="mb-8 lg:mb-16">Search</h1>
 
           <div className="max-w-200 mx-auto">
-            <Search />
+            <Suspense>
+              <Search />
+              <SearchFilters
+                genres={genresResult.docs.map((g) => ({ id: g.id, title: g.title }))}
+                types={categoriesResult.docs.map((c) => ({ id: c.id, title: c.title }))}
+              />
+            </Suspense>
           </div>
         </div>
       </div>
