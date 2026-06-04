@@ -1,6 +1,13 @@
 'use client'
 import React, { useCallback } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 type FilterOption = {
   id: number | string
@@ -36,30 +43,32 @@ export const SearchFilters: React.FC<Props> = ({ genres, types }) => {
 
   return (
     <div className="flex gap-3 mt-4 flex-wrap justify-center">
-      <select
-        value={activeGenre}
-        onChange={(e) => updateParam('genre', e.target.value)}
-        className="border border-border rounded px-3 py-1.5 bg-background text-sm min-w-32"
-      >
-        <option value="">All Genres</option>
-        {genres.map((g) => (
-          <option key={g.id} value={g.title}>
-            {g.title}
-          </option>
-        ))}
-      </select>
-      <select
-        value={activeType}
-        onChange={(e) => updateParam('type', e.target.value)}
-        className="border border-border rounded px-3 py-1.5 bg-background text-sm min-w-32"
-      >
-        <option value="">All Types</option>
-        {types.map((t) => (
-          <option key={t.id} value={t.title}>
-            {t.title}
-          </option>
-        ))}
-      </select>
+      <Select value={activeGenre} onValueChange={(value) => updateParam('genre', value === '__all__' ? '' : value)}>
+        <SelectTrigger className="min-w-36">
+          <SelectValue placeholder="All Genres" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="__all__">All Genres</SelectItem>
+          {genres.map((g) => (
+            <SelectItem key={g.id} value={g.title}>
+              {g.title}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Select value={activeType} onValueChange={(value) => updateParam('type', value === '__all__' ? '' : value)}>
+        <SelectTrigger className="min-w-36">
+          <SelectValue placeholder="All Types" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="__all__">All Types</SelectItem>
+          {types.map((t) => (
+            <SelectItem key={t.id} value={t.title}>
+              {t.title}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }
