@@ -25,27 +25,17 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   const {
     q: query,
     page: pageParam,
-    genre: genreFilter,
     type: typeFilter,
   } = await searchParamsPromise
   const page = Math.max(1, parseInt(pageParam ?? '1', 10) || 1)
   const payload = await getPayload({ config: configPromise })
 
-  const [genresResult, categoriesResult] = await Promise.all([
-    payload.find({
-      collection: 'genres',
-      limit: 200,
-      select: { title: true },
-      sort: 'title',
-      overrideAccess: true,
-    }),
-    payload.find({
-      collection: 'categories',
-      limit: 50,
-      select: { title: true },
-      sort: 'title',
-    }),
-  ])
+  const categoriesResult = await payload.find({
+    collection: 'categories',
+    limit: 50,
+    select: { title: true },
+    sort: 'title',
+  })
 
   const andConditions: any[] = []
 
@@ -59,10 +49,6 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
         { contributor: { like: query } },
       ],
     })
-  }
-
-  if (genreFilter) {
-    andConditions.push({ genre: { equals: genreFilter } })
   }
 
   if (typeFilter) {
@@ -89,7 +75,6 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
   const buildHref = (p: number) => {
     const params = new URLSearchParams()
     if (query) params.set('q', query)
-    if (genreFilter) params.set('genre', genreFilter)
     if (typeFilter) params.set('type', typeFilter)
     params.set('page', String(p))
     return `/search?${params.toString()}`
@@ -106,7 +91,6 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
             <Suspense>
               <Search />
               <SearchFilters
-                genres={genresResult.docs.map((g) => ({ id: g.id, title: g.title }))}
                 types={categoriesResult.docs.map((c) => ({ id: c.id, title: c.title }))}
               />
             </Suspense>

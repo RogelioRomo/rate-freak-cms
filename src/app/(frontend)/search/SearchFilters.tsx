@@ -15,11 +15,10 @@ type FilterOption = {
 }
 
 type Props = {
-  genres: FilterOption[]
   types: FilterOption[]
 }
 
-export const SearchFilters: React.FC<Props> = ({ genres, types }) => {
+export const SearchFilters: React.FC<Props> = ({ types }) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -38,24 +37,10 @@ export const SearchFilters: React.FC<Props> = ({ genres, types }) => {
     [searchParams, router, pathname],
   )
 
-  const activeGenre = searchParams.get('genre') || ''
   const activeType = searchParams.get('type') || ''
 
   return (
     <div className="flex gap-3 mt-4 flex-wrap justify-center">
-      <Select value={activeGenre} onValueChange={(value) => updateParam('genre', value === '__all__' ? '' : value)}>
-        <SelectTrigger className="min-w-36">
-          <SelectValue placeholder="All Genres" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="__all__">All Genres</SelectItem>
-          {genres.map((g) => (
-            <SelectItem key={g.id} value={g.title}>
-              {g.title}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
       <Select value={activeType} onValueChange={(value) => updateParam('type', value === '__all__' ? '' : value)}>
         <SelectTrigger className="min-w-36">
           <SelectValue placeholder="All Types" />
