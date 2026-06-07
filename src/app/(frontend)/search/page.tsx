@@ -37,6 +37,7 @@ export default async function Page({ searchParams: searchParamsPromise }: Args) 
       limit: 200,
       select: { title: true },
       sort: 'title',
+      overrideAccess: true,
     }),
     payload.find({
       collection: 'categories',
