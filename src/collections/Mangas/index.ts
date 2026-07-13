@@ -3,6 +3,7 @@ import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
 import { populateType } from '@/hooks/populateType'
+import { apiSearchConfigs } from '@/utilities/apiSearchConfigs'
 import { CollectionConfig } from 'payload'
 
 export const Mangas: CollectionConfig<'mangas'> = {
@@ -24,25 +25,7 @@ export const Mangas: CollectionConfig<'mangas'> = {
         components: {
           Field: '/components/ApiSearch',
         },
-        custom: {
-          apiEndpoint: '/api/anilist/search',
-          resultsKey: 'results',
-          fieldMapping: {
-            title: 'title',
-          },
-          uploadFields: {
-            coverImage: { payloadField: 'cover', altField: 'title' },
-          },
-          relationshipFields: {
-            author: {
-              payloadField: 'author',
-              collection: 'authors',
-              matchField: 'name',
-            },
-          },
-          displayFields: ['title', 'author'],
-          thumbnailField: 'coverImage',
-        },
+        custom: apiSearchConfigs.mangas,
       },
     },
     {

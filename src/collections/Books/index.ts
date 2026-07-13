@@ -3,6 +3,7 @@ import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
 import { populateType } from '@/hooks/populateType'
+import { apiSearchConfigs } from '@/utilities/apiSearchConfigs'
 import { CollectionConfig } from 'payload'
 
 export const Books: CollectionConfig<'books'> = {
@@ -24,25 +25,7 @@ export const Books: CollectionConfig<'books'> = {
         components: {
           Field: '/components/ApiSearch',
         },
-        custom: {
-          apiEndpoint: '/api/hardcover/search',
-          resultsKey: 'results',
-          fieldMapping: {
-            title: 'title',
-          },
-          uploadFields: {
-            coverImage: { payloadField: 'cover', altField: 'title' },
-          },
-          relationshipFields: {
-            authorName: {
-              payloadField: 'author',
-              collection: 'authors',
-              matchField: 'name',
-            },
-          },
-          displayFields: ['title', 'authorName'],
-          thumbnailField: 'coverImage',
-        },
+        custom: apiSearchConfigs.books,
       },
     },
     {

@@ -3,6 +3,7 @@ import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { populateType } from '@/hooks/populateType'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
+import { apiSearchConfigs } from '@/utilities/apiSearchConfigs'
 import { CollectionConfig } from 'payload'
 
 export const Tracks: CollectionConfig<'tracks'> = {
@@ -24,21 +25,7 @@ export const Tracks: CollectionConfig<'tracks'> = {
         components: {
           Field: '/components/ApiSearch',
         },
-        custom: {
-          apiEndpoint: '/api/deezer/search?type=track',
-          resultsKey: 'data',
-          fieldMapping: {
-            title: 'title',
-          },
-          uploadFields: {
-            'album.cover_big': { payloadField: 'cover', altField: 'title' },
-          },
-          relationshipFields: {
-            'artist.name': { payloadField: 'artist', collection: 'artists', matchField: 'name' },
-          },
-          displayFields: ['title', 'artist.name'],
-          thumbnailField: 'album.cover_small',
-        },
+        custom: apiSearchConfigs.tracks,
       },
     },
     {

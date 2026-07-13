@@ -3,6 +3,7 @@ import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateItemSlug } from '@/utilities/generateItemSlug'
 import { populateType } from '@/hooks/populateType'
+import { apiSearchConfigs } from '@/utilities/apiSearchConfigs'
 import { CollectionConfig } from 'payload'
 
 export const Comics: CollectionConfig<'comics'> = {
@@ -24,25 +25,7 @@ export const Comics: CollectionConfig<'comics'> = {
         components: {
           Field: '/components/ApiSearch',
         },
-        custom: {
-          apiEndpoint: '/api/comicvine/search?resources=volume',
-          resultsKey: 'results',
-          fieldMapping: {
-            name: 'title',
-          },
-          uploadFields: {
-            'image.medium_url': { payloadField: 'cover', altField: 'name' },
-          },
-          relationshipFields: {
-            'publisher.name': {
-              payloadField: 'author',
-              collection: 'authors',
-              matchField: 'name',
-            },
-          },
-          displayFields: ['name', 'start_year'],
-          thumbnailField: 'image.small_url',
-        },
+        custom: apiSearchConfigs.comics,
       },
     },
     {

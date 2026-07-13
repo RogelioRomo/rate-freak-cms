@@ -2,6 +2,7 @@ import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { ensureMediaFolder } from '@/hooks/ensureMediaFolder'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { populateType } from '@/hooks/populateType'
+import { apiSearchConfigs } from '@/utilities/apiSearchConfigs'
 import { CollectionConfig, slugField } from 'payload'
 
 export const Shows: CollectionConfig<'shows'> = {
@@ -23,18 +24,7 @@ export const Shows: CollectionConfig<'shows'> = {
         components: {
           Field: '/components/ApiSearch',
         },
-        custom: {
-          apiEndpoint: '/api/omdb/search?type=series',
-          resultsKey: 'Search',
-          fieldMapping: {
-            Title: 'title',
-          },
-          uploadFields: {
-            Poster: { payloadField: 'cover', altField: 'Title' },
-          },
-          displayFields: ['Title', 'Year'],
-          thumbnailField: 'Poster',
-        },
+        custom: apiSearchConfigs.shows,
       },
     },
     {
@@ -66,6 +56,6 @@ export const Shows: CollectionConfig<'shows'> = {
     slugField(),
   ],
   hooks: {
-    beforeChange: [populatePublishedAt, populateType('tv-shows')],
+    beforeChange: [populatePublishedAt, populateType('tv-shows', 'TV Shows')],
   },
 }

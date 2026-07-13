@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
+import { AddItemSheet } from '@/components/AddItemSheet'
 
 export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ data, user }) => {
   const navItems = data?.navItems || []
@@ -61,6 +62,8 @@ export const HeaderNav: React.FC<{ data: HeaderType; user: User | null }> = ({ d
           </SheetContent>
         </Sheet>
       </div>
+
+      {(user?.role === 'admin' || user?.role === 'editor') && <AddItemSheet />}
 
       <Link href="/search">
         <span className="sr-only">Search</span>
