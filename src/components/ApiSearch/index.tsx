@@ -23,6 +23,13 @@ type RelationshipFieldMapping = Record<
   { payloadField: string; collection: string; matchField: string }
 >
 
+// Map an API path holding an array of values to a Payload hasMany relationship
+// e.g. { "systems": { payloadField: "system", collection: "systems", matchField: "name" } }
+type MultiRelationshipFieldMapping = Record<
+  string,
+  { payloadField: string; collection: string; matchField: string }
+>
+
 // Default config — override via field.admin.custom in each collection
 const DEFAULT_API_ENDPOINT = process.env.DEEZER_API_ENDPOINT
 const DEFAULT_RESULTS_KEY = 'data'
@@ -79,6 +86,8 @@ const ApiSearchComponent: UIFieldClientComponent = ({ field }) => {
   const uploadFields: UploadFieldMapping = (custom?.uploadFields as UploadFieldMapping) ?? {}
   const relationshipFields: RelationshipFieldMapping =
     (custom?.relationshipFields as RelationshipFieldMapping) ?? {}
+  const multiRelationshipFields: MultiRelationshipFieldMapping =
+    (custom?.multiRelationshipFields as MultiRelationshipFieldMapping) ?? {}
 
   const handleSelect = useCallback(
     async (result: SearchResult) => {
@@ -121,6 +130,35 @@ const ApiSearchComponent: UIFieldClientComponent = ({ field }) => {
         }
       }
 
+      // Resolve hasMany relationship fields (find or create each array element)
+      for (const [apiPath, { payloadField, collection, matchField }] of Object.entries(
+        multiRelationshipFields,
+      )) {
+        const rawValues = getNestedValue(result, apiPath)
+        if (!Array.isArray(rawValues)) continue
+
+        const settled = await Promise.allSettled(
+          rawValues
+            .filter((v): v is string | number => v != null)
+            .map(async (value) => {
+              const res = await fetch('/api/resolve-relationship', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ collection, field: matchField, value: String(value) }),
+              })
+              if (!res.ok) throw new Error(`Failed to resolve ${collection}`)
+              const { id } = await res.json()
+              return id
+            }),
+        )
+
+        const ids = settled
+          .filter((r): r is PromiseFulfilledResult<number> => r.status === 'fulfilled')
+          .map((r) => r.value)
+
+        if (ids.length > 0) formState[payloadField] = { value: ids }
+      }
+
       // Import images via server-side proxy and map resulting media IDs
       const uploadEntries = Object.entries(uploadFields)
       if (uploadEntries.length > 0) {
@@ -155,7 +193,7 @@ const ApiSearchComponent: UIFieldClientComponent = ({ field }) => {
       setQuery('')
       setLoading(false)
     },
-    [dispatchFields, fieldMapping, uploadFields, relationshipFields],
+    [dispatchFields, fieldMapping, uploadFields, relationshipFields, multiRelationshipFields],
   )
 
   const getDisplayText = (result: SearchResult): string => {

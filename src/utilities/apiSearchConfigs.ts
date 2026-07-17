@@ -25,6 +25,16 @@ export type ApiSearchConfig = {
     string,
     { payloadField: string; collection: string; matchField: string }
   >
+  /**
+   * API path holding an ARRAY of values -> Payload `hasMany` relationship field.
+   * Each value is find-or-created by matchField and the resulting IDs are set as
+   * an array. In the frontend AddItemSheet the values are shown as an editable
+   * comma-separated list before resolving.
+   */
+  multiRelationshipFields?: Record<
+    string,
+    { payloadField: string; collection: string; matchField: string }
+  >
   /** API result paths joined for display in result lists */
   displayFields: string[]
   /** API result path holding a thumbnail URL */
@@ -141,6 +151,25 @@ export const apiSearchConfigs = {
     },
     displayFields: ['name', 'start_year'],
     thumbnailField: 'image.small_url',
+  },
+  games: {
+    label: 'Game',
+    apiEndpoint: '/api/igdb/search',
+    resultsKey: 'results',
+    fieldMapping: {
+      name: 'title',
+    },
+    uploadFields: {
+      cover: { payloadField: 'cover', altField: 'name' },
+    },
+    relationshipFields: {
+      studio: { payloadField: 'studio', collection: 'studios', matchField: 'name' },
+    },
+    multiRelationshipFields: {
+      systems: { payloadField: 'system', collection: 'systems', matchField: 'name' },
+    },
+    displayFields: ['name', 'year'],
+    thumbnailField: 'thumbnail',
   },
 } satisfies Record<string, ApiSearchConfig>
 

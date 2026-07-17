@@ -12,6 +12,7 @@ import type {
   Comic,
   Mangas,
   Show,
+  Game,
   Media as MediaType,
 } from '@/payload-types'
 import { Media } from '@/components/Media'
@@ -24,6 +25,7 @@ type PopulatedReview = Omit<Review, 'item'> & {
     | { relationTo: 'comics'; value: Comic }
     | { relationTo: 'mangas'; value: Mangas }
     | { relationTo: 'shows'; value: Show }
+    | { relationTo: 'games'; value: Game }
 }
 
 function getCover(item: PopulatedReview['item']): MediaType | null {
@@ -47,6 +49,11 @@ function getCreator(item: PopulatedReview['item']): string | null {
   if (relationTo === 'books' || relationTo === 'comics' || relationTo === 'mangas') {
     const author = (value as Book | Comic | Mangas).author
     if (author && typeof author === 'object') return author.name
+  }
+
+  if (relationTo === 'games') {
+    const studio = (value as Game).studio
+    if (studio && typeof studio === 'object') return studio.name
   }
 
   return null

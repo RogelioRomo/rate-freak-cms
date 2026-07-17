@@ -4,7 +4,17 @@ import { cn } from '@/utilities/ui'
 import Link from 'next/link'
 import React from 'react'
 
-import type { Backlog, Album, Track, Book, Comic, Mangas, Show, Media as MediaType } from '@/payload-types'
+import type {
+  Backlog,
+  Album,
+  Track,
+  Book,
+  Comic,
+  Mangas,
+  Show,
+  Game,
+  Media as MediaType,
+} from '@/payload-types'
 import { Media } from '@/components/Media'
 
 type PopulatedBacklog = Omit<Backlog, 'item'> & {
@@ -15,6 +25,7 @@ type PopulatedBacklog = Omit<Backlog, 'item'> & {
     | { relationTo: 'comics'; value: Comic }
     | { relationTo: 'mangas'; value: Mangas }
     | { relationTo: 'shows'; value: Show }
+    | { relationTo: 'games'; value: Game }
 }
 
 function getCover(item: PopulatedBacklog['item']): MediaType | null {
@@ -38,6 +49,11 @@ function getCreator(item: PopulatedBacklog['item']): string | null {
   if (relationTo === 'books' || relationTo === 'comics' || relationTo === 'mangas') {
     const author = (value as Book | Comic | Mangas).author
     if (author && typeof author === 'object') return author.name
+  }
+
+  if (relationTo === 'games') {
+    const studio = (value as Game).studio
+    if (studio && typeof studio === 'object') return studio.name
   }
 
   return null

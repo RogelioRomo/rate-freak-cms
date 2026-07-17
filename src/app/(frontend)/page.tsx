@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { Button } from '@/components/ui/button'
 import { ItemCard } from '@/components/ItemCard'
-import { Disc3, Music, BookOpen, BookImage, BookText, Tv } from 'lucide-react'
+import { Disc3, Music, BookOpen, BookImage, BookText, Tv, Gamepad2 } from 'lucide-react'
 import type { Media as MediaType } from '@/payload-types'
 
 const sections = [
@@ -13,6 +13,7 @@ const sections = [
   { label: 'Comics', href: '/comics', icon: BookImage },
   { label: 'Mangas', href: '/mangas', icon: BookText },
   { label: 'Shows', href: '/shows', icon: Tv },
+  { label: 'Games', href: '/games', icon: Gamepad2 },
 ] as const
 
 const collections = [
@@ -22,6 +23,7 @@ const collections = [
   { slug: 'comics' as const, label: 'Comics', aspect: 'portrait' as const },
   { slug: 'mangas' as const, label: 'Mangas', aspect: 'portrait' as const },
   { slug: 'shows' as const, label: 'Shows', aspect: 'portrait' as const },
+  { slug: 'games' as const, label: 'Games', aspect: 'portrait' as const },
 ]
 
 export const revalidate = 60 // Revalidate every 60 seconds

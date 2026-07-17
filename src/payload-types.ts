@@ -74,10 +74,13 @@ export interface Config {
     mangas: Mangas;
     tracks: Track;
     shows: Show;
+    games: Game;
     backlog: Backlog;
     favorites: Favorite;
     artists: Artist;
     authors: Author;
+    studios: Studio;
+    systems: System;
     categories: Category;
     genres: Genre;
     media: Media;
@@ -108,10 +111,13 @@ export interface Config {
     mangas: MangasSelect<false> | MangasSelect<true>;
     tracks: TracksSelect<false> | TracksSelect<true>;
     shows: ShowsSelect<false> | ShowsSelect<true>;
+    games: GamesSelect<false> | GamesSelect<true>;
     backlog: BacklogSelect<false> | BacklogSelect<true>;
     favorites: FavoritesSelect<false> | FavoritesSelect<true>;
     artists: ArtistsSelect<false> | ArtistsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
+    studios: StudiosSelect<false> | StudiosSelect<true>;
+    systems: SystemsSelect<false> | SystemsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -205,6 +211,10 @@ export interface Review {
     | {
         relationTo: 'shows';
         value: number | Show;
+      }
+    | {
+        relationTo: 'games';
+        value: number | Game;
       };
   publishedAt?: string | null;
   rating: number;
@@ -444,6 +454,54 @@ export interface Show {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games".
+ */
+export interface Game {
+  id: number;
+  title: string;
+  system?: (number | System)[] | null;
+  studio?: (number | null) | Studio;
+  publishedAt?: string | null;
+  type?: (number | null) | Category;
+  cover: number | Media;
+  slug?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "systems".
+ */
+export interface System {
+  id: number;
+  name: string;
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "studios".
+ */
+export interface Studio {
+  id: number;
+  name: string;
+  publishedAt?: string | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -499,6 +557,10 @@ export interface Backlog {
     | {
         relationTo: 'shows';
         value: number | Show;
+      }
+    | {
+        relationTo: 'games';
+        value: number | Game;
       };
   user: number | User;
   type?: (number | null) | Category;
@@ -535,6 +597,10 @@ export interface Favorite {
     | {
         relationTo: 'shows';
         value: number | Show;
+      }
+    | {
+        relationTo: 'games';
+        value: number | Game;
       };
   user: number | User;
   type?: (number | null) | Category;
@@ -1079,6 +1145,10 @@ export interface Search {
     | {
         relationTo: 'tracks';
         value: number | Track;
+      }
+    | {
+        relationTo: 'games';
+        value: number | Game;
       };
   genre?: string | null;
   contributor?: string | null;
@@ -1244,6 +1314,10 @@ export interface PayloadLockedDocument {
         value: number | Show;
       } | null)
     | ({
+        relationTo: 'games';
+        value: number | Game;
+      } | null)
+    | ({
         relationTo: 'backlog';
         value: number | Backlog;
       } | null)
@@ -1258,6 +1332,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'authors';
         value: number | Author;
+      } | null)
+    | ({
+        relationTo: 'studios';
+        value: number | Studio;
+      } | null)
+    | ({
+        relationTo: 'systems';
+        value: number | System;
       } | null)
     | ({
         relationTo: 'categories';
@@ -1448,6 +1530,21 @@ export interface ShowsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "games_select".
+ */
+export interface GamesSelect<T extends boolean = true> {
+  title?: T;
+  system?: T;
+  studio?: T;
+  publishedAt?: T;
+  type?: T;
+  cover?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "backlog_select".
  */
 export interface BacklogSelect<T extends boolean = true> {
@@ -1485,6 +1582,30 @@ export interface ArtistsSelect<T extends boolean = true> {
  * via the `definition` "authors_select".
  */
 export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "studios_select".
+ */
+export interface StudiosSelect<T extends boolean = true> {
+  name?: T;
+  publishedAt?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "systems_select".
+ */
+export interface SystemsSelect<T extends boolean = true> {
   name?: T;
   publishedAt?: T;
   generateSlug?: T;

@@ -34,6 +34,8 @@ type PopulatedItem = {
   textFields: Record<string, string>
   /** relationshipFields key (API path) -> matched value, editable before resolving */
   relationValues: Record<string, string>
+  /** multiRelationshipFields key (API path) -> comma-separated values, editable */
+  multiRelationValues: Record<string, string>
   /** External cover image URL + alt, from the first uploadFields entry */
   coverUrl: string | null
   coverAlt: string
@@ -137,6 +139,12 @@ export const AddItemSheet: React.FC = () => {
       if (value != null) relationValues[apiPath] = String(value)
     }
 
+    const multiRelationValues: Record<string, string> = {}
+    for (const apiPath of Object.keys(config.multiRelationshipFields ?? {})) {
+      const value = getNestedValue(result, apiPath)
+      if (Array.isArray(value)) multiRelationValues[apiPath] = value.filter(Boolean).join(', ')
+    }
+
     let coverUrl: string | null = null
     let coverAlt = ''
     const [uploadEntry] = Object.entries(config.uploadFields)
@@ -147,7 +155,7 @@ export const AddItemSheet: React.FC = () => {
       if (altField) coverAlt = String(getNestedValue(result, altField) ?? '')
     }
 
-    setItem({ textFields, relationValues, coverUrl, coverAlt })
+    setItem({ textFields, relationValues, multiRelationValues, coverUrl, coverAlt })
     setResults([])
     setStatus('idle')
     setErrorMessage('')
@@ -177,6 +185,30 @@ export const AddItemSheet: React.FC = () => {
         if (!res.ok) throw new Error(`Could not resolve ${payloadField}`)
         const { id } = await res.json()
         data[payloadField] = id
+      }
+
+      // Find-or-create each value of a hasMany relationship (e.g. game systems)
+      for (const [apiPath, { payloadField, collection, matchField }] of Object.entries(
+        config.multiRelationshipFields ?? {},
+      )) {
+        const values = (item.multiRelationValues[apiPath] ?? '')
+          .split(',')
+          .map((v) => v.trim())
+          .filter(Boolean)
+        if (values.length === 0) continue
+
+        const ids: number[] = []
+        for (const value of values) {
+          const res = await fetch('/api/resolve-relationship', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ collection, field: matchField, value }),
+          })
+          if (!res.ok) throw new Error(`Could not resolve ${payloadField} "${value}"`)
+          const { id } = await res.json()
+          ids.push(id)
+        }
+        data[payloadField] = ids
       }
 
       // Attach manually-picked relationships: existing ID directly, or
@@ -418,6 +450,33 @@ export const AddItemSheet: React.FC = () => {
                           setItem({
                             ...item,
                             relationValues: { ...item.relationValues, [apiPath]: e.target.value },
+                          })
+                        }
+                      />
+                    </div>
+                  ),
+                )}
+
+                {Object.entries(config.multiRelationshipFields ?? {}).map(
+                  ([apiPath, { payloadField }]) => (
+                    <div key={apiPath} className="flex flex-col gap-2">
+                      <label
+                        htmlFor={`add-item-multirel-${payloadField}`}
+                        className="text-sm font-medium capitalize"
+                      >
+                        {payloadField}{' '}
+                        <span className="text-muted-foreground font-normal">(comma-separated)</span>
+                      </label>
+                      <Input
+                        id={`add-item-multirel-${payloadField}`}
+                        value={item.multiRelationValues[apiPath] ?? ''}
+                        onChange={(e) =>
+                          setItem({
+                            ...item,
+                            multiRelationValues: {
+                              ...item.multiRelationValues,
+                              [apiPath]: e.target.value,
+                            },
                           })
                         }
                       />

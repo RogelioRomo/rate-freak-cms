@@ -22,6 +22,9 @@ import { Mangas } from './collections/Mangas'
 import { Comics } from './collections/Comics'
 import { Shows } from './collections/Shows'
 import { Tracks } from './collections/Tracks'
+import { Games } from './collections/Games'
+import { Systems } from './collections/Systems'
+import { Studios } from './collections/Studios'
 import { Authors } from './collections/Authors'
 import { Reviews } from './collections/Reviews'
 import { Backlog } from './collections/Backlog'
@@ -87,10 +90,13 @@ export default buildConfig({
     Mangas,
     Tracks,
     Shows,
+    Games,
     Backlog,
     Favorites,
     Artists,
     Authors,
+    Studios,
+    Systems,
     Categories,
     Genres,
     Media,

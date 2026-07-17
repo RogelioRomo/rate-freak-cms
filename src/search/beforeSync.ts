@@ -34,14 +34,19 @@ export const beforeSyncWithSearch: BeforeSync = async ({ req, originalDoc, searc
     }
   }
 
-  // Resolve contributor name (artist for albums/tracks, author for books/comics/mangas)
+  // Resolve contributor name (artist for albums/tracks, author for
+  // books/comics/mangas, studio for games)
   let contributor: string | undefined
-  const creatorField = originalDoc.artist ?? originalDoc.author
+  const creatorField = originalDoc.artist ?? originalDoc.author ?? originalDoc.studio
   if (creatorField) {
     if (typeof creatorField === 'object' && creatorField.name) {
       contributor = creatorField.name
     } else if (typeof creatorField === 'string' || typeof creatorField === 'number') {
-      const creatorCollection = originalDoc.artist ? 'artists' : 'authors'
+      const creatorCollection = originalDoc.artist
+        ? 'artists'
+        : originalDoc.author
+          ? 'authors'
+          : 'studios'
       const creatorDoc = await req.payload.findByID({
         collection: creatorCollection,
         id: creatorField,

@@ -3,7 +3,13 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import type { CollectionSlug } from 'payload'
 
-const ALLOWED_COLLECTIONS: CollectionSlug[] = ['artists', 'genres', 'authors']
+const ALLOWED_COLLECTIONS: CollectionSlug[] = [
+  'artists',
+  'genres',
+  'authors',
+  'studios',
+  'systems',
+]
 
 export async function POST(request: NextRequest) {
   const payload = await getPayload({ config })

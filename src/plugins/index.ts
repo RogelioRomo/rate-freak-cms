@@ -103,7 +103,7 @@ export const plugins: Plugin[] = [
     },
   }),
   searchPlugin({
-    collections: ['albums', 'books', 'comics', 'mangas', 'shows', 'tracks'],
+    collections: ['albums', 'books', 'comics', 'mangas', 'shows', 'tracks', 'games'],
     beforeSync: beforeSyncWithSearch,
     searchOverrides: {
       admin: {

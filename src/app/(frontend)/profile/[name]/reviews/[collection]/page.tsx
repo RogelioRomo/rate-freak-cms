@@ -10,7 +10,7 @@ import { PageRange } from '@/components/PageRange'
 
 const LIMIT = 12
 
-const validCollections = ['albums', 'tracks', 'books', 'comics', 'mangas', 'shows'] as const
+const validCollections = ['albums', 'tracks', 'books', 'comics', 'mangas', 'shows', 'games'] as const
 
 const collectionLabels: Record<string, string> = {
   albums: 'Albums',
@@ -19,6 +19,7 @@ const collectionLabels: Record<string, string> = {
   comics: 'Comics',
   mangas: 'Mangas',
   shows: 'Shows',
+  games: 'Games',
 }
 
 type Args = {

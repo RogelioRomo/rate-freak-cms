@@ -22,6 +22,7 @@ const collectionFilters = [
   { slug: 'comics', label: 'Comics' },
   { slug: 'mangas', label: 'Mangas' },
   { slug: 'shows', label: 'Shows' },
+  { slug: 'games', label: 'Games' },
 ]
 
 export default async function ProfileReviewsPage({

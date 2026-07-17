@@ -2,8 +2,8 @@ import { toKebabCase } from '@/utilities/toKebabCase'
 import type { CollectionBeforeChangeHook } from 'payload'
 
 type Options = {
-  creatorField: 'artist' | 'author'
-  creatorCollection: 'artists' | 'authors'
+  creatorField: 'artist' | 'author' | 'studio'
+  creatorCollection: 'artists' | 'authors' | 'studios'
 }
 
 export const generateItemSlug =

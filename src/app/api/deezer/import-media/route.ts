@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
     'anilist.co',
     'hardcover.app',
     'imgix.net',
+    'igdb.com',
   ]
   let parsedUrl: URL
   try {
