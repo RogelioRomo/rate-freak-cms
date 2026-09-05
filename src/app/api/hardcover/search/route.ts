@@ -45,7 +45,12 @@ export async function GET(request: NextRequest) {
   })
 
   if (!res.ok) {
-    return NextResponse.json({ error: 'Hardcover API request failed' }, { status: res.status })
+    const detail = await res.text()
+    console.error(`Hardcover API request failed (${res.status}): ${detail}`)
+    return NextResponse.json(
+      { error: 'Hardcover API request failed', status: res.status, detail },
+      { status: res.status },
+    )
   }
 
   const json = await res.json()

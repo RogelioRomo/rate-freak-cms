@@ -50,7 +50,7 @@ const NEW_OPTION = '__new__'
 type ManualOption = { id: number; label: string }
 type ManualSelection = { selectedId: string; newValue: string }
 
-export const AddItemSheet: React.FC = () => {
+export const AddItemSheet: React.FC<{ trigger?: React.ReactNode }> = ({ trigger }) => {
   const [open, setOpen] = useState(false)
   const [slug, setSlug] = useState<ApiSearchCollectionSlug | ''>('')
   const [query, setQuery] = useState('')
@@ -296,9 +296,11 @@ export const AddItemSheet: React.FC = () => {
       }}
     >
       <SheetTrigger asChild>
-        <button aria-label="Add item">
-          <PlusCircleIcon className="w-5 text-primary" />
-        </button>
+        {trigger ?? (
+          <button aria-label="Add item">
+            <PlusCircleIcon className="w-5 text-primary" />
+          </button>
+        )}
       </SheetTrigger>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
