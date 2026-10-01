@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -29,6 +30,7 @@ type Props = {
 type Category = { id: string; title: string }
 
 export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle }) => {
+  const router = useRouter()
   const [userId, setUserId] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [rating, setRating] = useState('')
@@ -103,6 +105,10 @@ export const ReviewSheet: React.FC<Props> = ({ itemId, collectionSlug, itemTitle
 
       if (!res.ok) throw new Error('Failed')
       setStatus('success')
+
+      // The afterChange hook on Reviews has already revalidated this item's page,
+      // so refetch the server components to show the new review right away.
+      router.refresh()
     } catch {
       setStatus('error')
     }

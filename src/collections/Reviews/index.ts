@@ -4,6 +4,7 @@ import { isAdminOrEditor } from '@/access/isAdminOrEditor'
 import { populatePublishedAt } from '@/hooks/populatePublishedAt'
 import { generateReviewSlug } from '@/utilities/generateReviewSlug'
 import type { CollectionConfig } from 'payload'
+import { revalidateReview, revalidateReviewDelete } from './hooks/revalidateReview'
 
 export const Reviews: CollectionConfig<'reviews'> = {
   slug: 'reviews',
@@ -62,5 +63,7 @@ export const Reviews: CollectionConfig<'reviews'> = {
   hooks: {
     beforeValidate: [generateReviewSlug],
     beforeChange: [populatePublishedAt],
+    afterChange: [revalidateReview],
+    afterDelete: [revalidateReviewDelete],
   },
 }
