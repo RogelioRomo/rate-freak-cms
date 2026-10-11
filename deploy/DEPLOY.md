@@ -4,7 +4,8 @@
 
 - Ubuntu/Debian server with Docker installed
 - A domain name pointing to your server's IP (A record)
-- An existing PostgreSQL instance accessible from the server
+- PostgreSQL running on the server (outside Docker) — the container uses host
+  networking, so `DATABASE_URL` can point at `localhost` with no Postgres config changes
 - Nginx installed on the server (`sudo apt install nginx`)
 
 ---
@@ -16,13 +17,7 @@ git clone <your-repo-url> /opt/rate-freak-cms
 cd /opt/rate-freak-cms
 ```
 
-## 2. Create the Docker Network
-
-```bash
-docker network create web
-```
-
-## 3. Configure Environment Variables
+## 2. Configure Environment Variables
 
 ```bash
 cp .env.production.example .env.production
@@ -48,11 +43,18 @@ Make sure `DATABASE_URL` points to your PostgreSQL instance and the database exi
 psql -h <host> -U <user> -c "CREATE DATABASE rate_freak;"
 ```
 
-## 4. Build and Start the App
+## 3. Build and Start the App
+
+`next build` prerenders pages from the database, so the build needs to reach Postgres.
+`deploy/build.sh` builds on the host network and passes `.env.production` in as a build
+secret (it is not stored in the image):
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d --build
+./deploy/build.sh
+docker compose -f docker-compose.prod.yml up -d
 ```
+
+> `NEXT_PUBLIC_SERVER_URL` is baked into the client bundle at build time — rebuild after changing it.
 
 Verify it's running:
 
@@ -62,7 +64,7 @@ docker compose -f docker-compose.prod.yml logs -f app
 
 The app will be available at `http://127.0.0.1:3000` on the server.
 
-## 5. Set Up Nginx + SSL
+## 4. Set Up Nginx + SSL
 
 ### Install Certbot
 
@@ -107,15 +109,19 @@ sudo cp deploy/nginx/rate-freak.conf /etc/nginx/sites-available/rate-freak
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
-## 6. Run Database Migrations
+## 5. Run Database Migrations
 
-After the first deploy (and after any schema changes):
+The runtime image is a minimal standalone build without the Payload CLI, so migrations run
+from a separate one-off container:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec app npx payload migrate
+docker compose -f docker-compose.prod.yml run --rm --build migrate
 ```
 
-## 7. Create Your First Admin User
+> Note: `src/migrations/` is currently gitignored, so a fresh `git clone` on the server has
+> no migrations to run. Commit them if you want to apply schema changes this way.
+
+## 6. Create Your First Admin User
 
 Visit `https://yourdomain.com/admin` and create the first user through the UI.
 
@@ -126,7 +132,8 @@ Visit `https://yourdomain.com/admin` and create the first user through the UI.
 ```bash
 cd /opt/rate-freak-cms
 git pull
-docker compose -f docker-compose.prod.yml up -d --build
+./deploy/build.sh
+docker compose -f docker-compose.prod.yml up -d
 ```
 
 ## Useful Commands

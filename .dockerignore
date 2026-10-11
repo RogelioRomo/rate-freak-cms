@@ -1,0 +1,16 @@
+.git
+.next
+node_modules
+.env*
+!.env.example
+!.env.production.example
+test.env
+tests
+playwright-report
+test-results
+*.tsbuildinfo
+.vscode
+.cursor
+deploy
+Dockerfile
+docker-compose*.yml

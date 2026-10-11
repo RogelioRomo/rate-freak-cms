@@ -1,16 +1,27 @@
+# Production stack. Postgres runs on the host (outside Docker), so the app uses
+# host networking: DATABASE_URL can keep pointing at localhost, and no Postgres
+# listen_addresses / pg_hba changes are needed. Nginx on the host proxies to 127.0.0.1:3000.
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    # Built by deploy/build.sh (compose can't grant the build host networking)
+    image: rate-freak-cms:latest
     restart: unless-stopped
-    ports:
-      - '127.0.0.1:3000:3000'
+    network_mode: host
     env_file:
       - .env.production
-    networks:
-      - web
+    environment:
+      # Only listen on loopback; nginx is the public entrypoint.
+      HOSTNAME: 127.0.0.1
+      PORT: 3000
 
-networks:
-  web:
-    external: true
+  # One-off: docker compose -f docker-compose.prod.yml run --rm migrate
+  migrate:
+    image: rate-freak-cms-migrate:latest
+    build:
+      context: .
+      target: migrate
+    profiles:
+      - tools
+    network_mode: host
+    env_file:
+      - .env.production
