@@ -1,12 +1,30 @@
-# Production stack. Postgres runs on the host (outside Docker), so the app uses
-# host networking: DATABASE_URL can keep pointing at localhost, and no Postgres
-# listen_addresses / pg_hba changes are needed. Nginx on the host proxies to 127.0.0.1:3000.
+# Production stack. Postgres is published on the host's loopback only, and the app uses
+# host networking, so DATABASE_URL points at 127.0.0.1:5432 both at runtime and during
+# `next build` (which prerenders pages from the DB). Nginx on the host proxies to 127.0.0.1:3000.
 services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    env_file:
+      - .env.production
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   app:
     # Built by deploy/build.sh (compose can't grant the build host networking)
     image: rate-freak-cms:latest
     restart: unless-stopped
     network_mode: host
+    depends_on:
+      db:
+        condition: service_healthy
     env_file:
       - .env.production
     environment:
@@ -25,3 +43,6 @@ services:
     network_mode: host
     env_file:
       - .env.production
+
+volumes:
+  pgdata:
