@@ -1,6 +1,7 @@
 # Production stack. Postgres is published on the host's loopback only, and the app uses
 # host networking, so DATABASE_URL points at 127.0.0.1:5432 both at runtime and during
-# `next build` (which prerenders pages from the DB). Nginx on the host proxies to 127.0.0.1:3000.
+# `next build` (which prerenders pages from the DB). The cloudflared service exposes
+# 127.0.0.1:3000 to the internet through a Cloudflare Tunnel.
 services:
   db:
     image: postgres:16
@@ -31,6 +32,19 @@ services:
       # Only listen on loopback; nginx is the public entrypoint.
       HOSTNAME: 127.0.0.1
       PORT: 3000
+
+  # Cloudflare Tunnel: publishes the app without opening router ports.
+  # Point the tunnel's public hostname at http://localhost:3000 in the Cloudflare dashboard.
+  # TUNNEL_TOKEN lives in `.env` next to this file (kept separate so cloudflared doesn't get the app's secrets).
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    network_mode: host
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:-}
+    depends_on:
+      - app
 
   # One-off: docker compose -f docker-compose.prod.yml run --rm migrate
   migrate:
