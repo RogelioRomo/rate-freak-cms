@@ -1,7 +1,7 @@
 # Production stack. Postgres is published on the host's loopback only, and the app uses
 # host networking, so DATABASE_URL points at 127.0.0.1:5432 both at runtime and during
 # `next build` (which prerenders pages from the DB). The cloudflared service exposes
-# 127.0.0.1:3000 to the internet through a Cloudflare Tunnel.
+# 127.0.0.1:${APP_PORT} to the internet through a Cloudflare Tunnel. See deploy/DEPLOY.md.
 services:
   db:
     image: postgres:16

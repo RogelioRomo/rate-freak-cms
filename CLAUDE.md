@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Payload CMS 3.80 + Next.js 16 (App Router, React 19) application built on the official Payload Website Template, then heavily customized into a **media rating/cataloguing CMS**. Alongside the template's Pages/Posts blog, it manages catalog collections — Albums, Tracks, Books, Comics, Mangas, Shows — plus per-user Reviews, Backlog, and Favorites. Backend (Payload admin + API) and frontend site run in a single Next.js instance. Package manager is **pnpm**; database is **PostgreSQL**.
 
-> Note: `README.md` is the upstream template's README and `docker-compose.yml` still references MongoDB — both are stale for this project (it uses Postgres via `@payloadcms/db-postgres`). `AGENTS.md` and `.cursor/rules/` are large **generic** Payload reference docs, not project-specific rules.
+> Note: `README.md` is the upstream template's README and `docker-compose.yml` still references MongoDB — both are stale for this project (it uses Postgres via `@payloadcms/db-postgres`). Production runs from `docker-compose.prod.yml` (Postgres + app + Cloudflare Tunnel), built with `deploy/build.sh`; see `deploy/DEPLOY.md`. `AGENTS.md` and `.cursor/rules/` are large **generic** Payload reference docs, not project-specific rules.
 
 ## Commands
 
